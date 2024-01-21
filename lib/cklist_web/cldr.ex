@@ -1,4 +1,4 @@
-defmodule Cklist.Cldr do
+defmodule CklistWeb.Cldr do
   @moduledoc """
     Define a backend module that will host our
     Cldr configuration and public API.

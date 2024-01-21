@@ -2,6 +2,7 @@ defmodule CklistWeb.Router do
   use CklistWeb, :router
 
   import CklistWeb.UsersAuth
+  require CklistWeb.Cldr
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,6 +12,8 @@ defmodule CklistWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_users
+    plug(Cldr.Plug.PutLocale, apps: [:cldr, :gettext], cldr: CklistWeb.Cldr)
+    plug(Cldr.Plug.AcceptLanguage, cldr_backend: CklistWeb.Cldr)
   end
 
   pipeline :api do
