@@ -58,6 +58,8 @@ defmodule Cklist.MixProject do
       {:ex_cldr_dates_times, "~> 2.16.0"},
       {:ex_cldr_units, "~> 3.16.4"},
       {:ex_cldr_plugs, "~> 1.3.1"},
+      {:ex_cldr_territories, "~> 2.8.1"},
+
 
       # configuration
       {:dotenvy, "~> 0.8.0"},
