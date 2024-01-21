@@ -4,7 +4,7 @@
  * https://buunguyen.github.io/topbar
  * Copyright (c) 2021 Buu Nguyen
  */
-(function (window, document) {
+(function (window: Window, document: Document) {
   "use strict";
 
   // https://gist.github.com/paulirish/1579671
@@ -19,7 +19,7 @@
         window[vendors[x] + "CancelRequestAnimationFrame"];
     }
     if (!window.requestAnimationFrame)
-      window.requestAnimationFrame = function (callback, element) {
+      window.requestAnimationFrame = function (callback) {
         var currTime = new Date().getTime();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
         var id = window.setTimeout(function () {
@@ -34,16 +34,14 @@
       };
   })();
 
-  var canvas,
-    currentProgress,
-    showing,
-    progressTimerId = null,
-    fadeTimerId = null,
-    delayTimerId = null,
-    addEvent = function (elem, type, handler) {
-      if (elem.addEventListener) elem.addEventListener(type, handler, false);
-      else if (elem.attachEvent) elem.attachEvent("on" + type, handler);
-      else elem["on" + type] = handler;
+  var canvas: HTMLCanvasElement,
+    currentProgress: number,
+    showing: boolean,
+    progressTimerId: number | null = null,
+    fadeTimerId: number | null = null,
+    delayTimerId: number | null = null,
+    addEvent = function (elem: Window | HTMLElement, type: string, handler: (event: Event) => void) {
+      elem.addEventListener(type, handler, false);
     },
     options = {
       autoRun: true,
@@ -69,7 +67,7 @@
 
       var lineGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
       for (var stop in options.barColors)
-        lineGradient.addColorStop(stop, options.barColors[stop]);
+        lineGradient.addColorStop(Number(stop), options.barColors[stop]);
       ctx.lineWidth = options.barThickness;
       ctx.beginPath();
       ctx.moveTo(0, options.barThickness / 2);
@@ -84,28 +82,28 @@
       canvas = document.createElement("canvas");
       var style = canvas.style;
       style.position = "fixed";
-      style.top = style.left = style.right = style.margin = style.padding = 0;
-      style.zIndex = 100001;
+      style.top = style.left = style.right = style.margin = style.padding = '0';
+      style.zIndex = '100001';
       style.display = "none";
       if (options.className) canvas.classList.add(options.className);
       document.body.appendChild(canvas);
       addEvent(window, "resize", repaint);
     },
     topbar = {
-      config: function (opts) {
+      config: function (opts: object) {
         for (var key in opts)
           if (options.hasOwnProperty(key)) options[key] = opts[key];
       },
-      show: function (delay) {
+      show: function (delay: number = 0) {
         if (showing) return;
         if (delay) {
           if (delayTimerId) return;
-          delayTimerId = setTimeout(() => topbar.show(), delay);
+          delayTimerId = window.setTimeout(() => topbar.show(), delay);
         } else  {
           showing = true;
           if (fadeTimerId !== null) window.cancelAnimationFrame(fadeTimerId);
           if (!canvas) createCanvas();
-          canvas.style.opacity = 1;
+          canvas.style.opacity = "1";
           canvas.style.display = "block";
           topbar.progress(0);
           if (options.autoRun) {
@@ -118,7 +116,7 @@
           }
         }
       },
-      progress: function (to) {
+      progress: function (to: undefined | string | number) {
         if (typeof to === "undefined") return currentProgress;
         if (typeof to === "string") {
           to =
@@ -141,8 +139,9 @@
         }
         (function loop() {
           if (topbar.progress("+.1") >= 1) {
-            canvas.style.opacity -= 0.05;
-            if (canvas.style.opacity <= 0.05) {
+            const opacity = Number(canvas.style.opacity) - 0.05;
+            canvas.style.opacity = `${opacity}`;
+            if (opacity <= 0.05) {
               canvas.style.display = "none";
               fadeTimerId = null;
               return;
@@ -153,13 +152,5 @@
       },
     };
 
-  if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = topbar;
-  } else if (typeof define === "function" && define.amd) {
-    define(function () {
-      return topbar;
-    });
-  } else {
-    this.topbar = topbar;
-  }
 }.call(this, window, document));
