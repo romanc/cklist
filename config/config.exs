@@ -36,7 +36,7 @@ config :ex_cldr,
 
 config :cklist, CklistWeb.Cldr,
   default_locale: "en",
-  locales: ["en", "de"],
+  locales: ["en"],
   gettext: Cklist.Gettext,
   data_dir: "./priv/cldr",
   precompile_number_formats: ["¤¤#,##0.##", "#,##0"],
