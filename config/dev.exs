@@ -2,10 +2,6 @@ import Config
 
 # Configure your database
 config :cklist, Cklist.Repo,
-  username: "cklist",
-  password: "cklist",
-  hostname: "localhost",
-  database: "cklist_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

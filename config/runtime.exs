@@ -1,4 +1,5 @@
 import Config
+import Dotenvy
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -16,24 +17,39 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
+config_dir_prefix =
+  case System.fetch_env("RELEASE_ROOT") do
+    :error ->
+      "envs/"
+
+    {:ok, value} ->
+      "#{value}/"
+  end
+
+source!([
+  "#{config_dir_prefix}.env",
+  "#{config_dir_prefix}.#{config_env()}.env",
+  "#{config_dir_prefix}.#{config_env()}.local.env",
+  System.get_env()
+])
+
+if env!("PHX_SERVER", :boolean, false) do
   config :cklist, CklistWeb.Endpoint, server: true
 end
 
-if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
+if config_env() == :dev do
+  config :cklist, Cklist.Repo,
+    url: env!("DATABASE_URL", :string, "ecto://cklist:cklist@localhost/cklist_dev")
+end
 
-  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
+if config_env() == :prod do
+  database_url = env!("DATABASE_URL")
+  maybe_ipv6 = if env!("ECTO_IPV6", :boolean, false), do: [:inet6], else: []
 
   config :cklist, Cklist.Repo,
     # ssl: true,
     url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    pool_size: env!("POOL_SIZE", :integer, 10),
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -42,26 +58,23 @@ if config_env() == :prod do
   # to check this value into version control, so we use an environment
   # variable instead.
   secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
+    env!("SECRET_KEY_BASE") ||
       raise """
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
-
-  config :cklist, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  config :cklist, :dns_cluster_query, env!("DNS_CLUSTER_QUERY", :string, nil)
 
   config :cklist, CklistWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
+    url: [host: env!("HTTP_HOSTNAME", :string, "example.com"), port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: port
+      port: env!("HTTP_PORT", :integer, 4000)
     ],
     secret_key_base: secret_key_base
 
@@ -75,8 +88,8 @@ if config_env() == :prod do
   #         ...,
   #         port: 443,
   #         cipher_suite: :strong,
-  #         keyfile: System.get_env("SOME_APP_SSL_KEY_PATH"),
-  #         certfile: System.get_env("SOME_APP_SSL_CERT_PATH")
+  #         keyfile: env!("SOME_APP_SSL_KEY_PATH", :string),
+  #         certfile: env!("SOME_APP_SSL_CERT_PATH", :string)
   #       ]
   #
   # The `cipher_suite` is set to `:strong` to support only the
@@ -114,4 +127,24 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  #
+  if env!("SMTP", :boolean, false) do
+    config :cklist, CKList.Mailer,
+      adapter: Swoosh.Adapters.SMTP,
+      hostname: env!("SMTP_HOSTNAME"),
+      relay: env!("SMTP_HOST"),
+      username: env!("SMTP_USER"),
+      port: env!("SMTP_PORT"),
+      password: env!("SMTP_PASSWORD"),
+      tls: :always,
+      auth: :always,
+      retries: 5,
+      no_mx_lookups: false,
+      tls_options: [
+        verify: :verify_peer,
+        cacerts: :certifi.cacerts(),
+        server_name_indication: String.to_charlist(env!("SMTP_HOST")),
+        depth: 99
+      ]
+  end
 end
