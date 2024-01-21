@@ -31,6 +31,18 @@ config :cklist, CklistWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :cklist, Cklist.Mailer, adapter: Swoosh.Adapters.Local
 
+config :ex_cldr,
+  default_backend: Cklist.Cldr
+
+config :cklist, CklistWeb.Cldr,
+  default_locale: "en",
+  locales: ["en", "de"],
+  gettext: Cklist.Gettext,
+  data_dir: "./priv/cldr",
+  precompile_number_formats: ["¤¤#,##0.##", "#,##0"],
+  precompile_transliterations: [],
+  providers: [Cldr.Calendar, Cldr.DateTime, Cldr.Number, Cldr.Unit]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
