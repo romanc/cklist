@@ -56,6 +56,9 @@ defmodule Cklist.MixProject do
       {:ex_cldr_units, "~> 3.16.4"},
       {:ex_cldr_plugs, "~> 1.3.1"},
 
+      # configuration
+      {:dotenvy, "~> 0.8.0"},
+
       # dev dependencies
       {:credo, "~> 1.7.3", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
