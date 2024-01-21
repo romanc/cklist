@@ -48,10 +48,17 @@ defmodule Cklist.MixProject do
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+
+      # i18n / l10n
+      {:gettext, "~> 0.24"},
+      {:ex_cldr, "~> 2.37.5"},
+      {:ex_cldr_numbers, "~> 2.32.4"},
+      {:ex_cldr_dates_times, "~> 2.16.0"},
+      {:ex_cldr_units, "~> 3.16.4"},
+      {:ex_cldr_plugs, "~> 1.3.1"},
     ]
   end
 
