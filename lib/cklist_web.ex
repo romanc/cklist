@@ -43,7 +43,7 @@ defmodule CklistWeb do
         layouts: [html: CklistWeb.Layouts]
 
       import Plug.Conn
-      import CklistWeb.Gettext
+      import Cklist.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +85,7 @@ defmodule CklistWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import CklistWeb.CoreComponents
-      import CklistWeb.Gettext
+      import Cklist.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

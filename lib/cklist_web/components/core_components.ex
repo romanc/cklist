@@ -17,7 +17,7 @@ defmodule CklistWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import CklistWeb.Gettext
+  import Cklist.Gettext
 
   @doc """
   Renders a modal.
@@ -659,9 +659,9 @@ defmodule CklistWeb.CoreComponents do
     # with our gettext backend as first argument. Translations are
     # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
-      Gettext.dngettext(CklistWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(Cklist.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(CklistWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(Cklist.Gettext, "errors", msg, opts)
     end
   end
 
