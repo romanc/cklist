@@ -1,0 +1,25 @@
+<.header>
+  Listing Checklists
+  <:actions>
+    <.link href={~p"/checklists/new"}>
+      <.button>New Checklist</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="checklists" rows={@checklists} row_click={&JS.navigate(~p"/checklists/#{&1}")}>
+  <:col :let={checklist} label="Title"><%= checklist.title %></:col>
+  <:col :let={checklist} label="Description"><%= checklist.description %></:col>
+  <:col :let={checklist} label="Document"><%= checklist.document %></:col>
+  <:action :let={checklist}>
+    <div class="sr-only">
+      <.link navigate={~p"/checklists/#{checklist}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/checklists/#{checklist}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={checklist}>
+    <.link href={~p"/checklists/#{checklist}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

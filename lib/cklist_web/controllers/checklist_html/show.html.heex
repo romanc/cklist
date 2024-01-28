@@ -1,0 +1,17 @@
+<.header>
+  Checklist <%= @checklist.id %>
+  <:subtitle>This is a checklist record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/checklists/#{@checklist}/edit"}>
+      <.button>Edit checklist</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @checklist.title %></:item>
+  <:item title="Description"><%= @checklist.description %></:item>
+  <:item title="Document"><%= @checklist.document %></:item>
+</.list>
+
+<.back navigate={~p"/checklists"}>Back to checklists</.back>
