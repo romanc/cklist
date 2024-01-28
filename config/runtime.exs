@@ -41,7 +41,7 @@ case config_env() do
   :test ->
     config :cklist, Cklist.Repo,
       url:
-        env!("DATABASE_URL", :string, "ecto://cklist:cklist@localhost/cklist_dev") <>
+        env!("TEST_DATABASE_URL", :string, "ecto://cklist:cklist@localhost/cklist_test") <>
           System.get_env("MIX_TEST_PARTITION", "")
 
   :dev ->
