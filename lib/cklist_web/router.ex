@@ -25,7 +25,7 @@ defmodule CklistWeb.Router do
 
     get "/", PageController, :home
 
-    resources "/checklists", ChecklistController
+    resources "/checklists", ChecklistController, only: [:index]
   end
 
   # Other scopes may use custom stacks.
@@ -74,6 +74,8 @@ defmodule CklistWeb.Router do
       live "/users/settings", UsersSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UsersSettingsLive, :confirm_email
     end
+
+    resources "/checklists", ChecklistController, except: [:index]
   end
 
   scope "/", CklistWeb do
