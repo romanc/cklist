@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersConfirmationInstructionsLive do
+defmodule CklistWeb.UserConfirmationInstructionsLive do
   use CklistWeb, :live_view
 
   alias Cklist.Accounts
@@ -21,22 +21,22 @@ defmodule CklistWeb.UsersConfirmationInstructionsLive do
       </.simple_form>
 
       <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
+        <.link href={~p"/user/register"}>Register</.link>
+        | <.link href={~p"/user/log_in"}>Log in</.link>
       </p>
     </div>
     """
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "users"))}
+    {:ok, assign(socket, form: to_form(%{}, as: "user"))}
   end
 
-  def handle_event("send_instructions", %{"users" => %{"email" => email}}, socket) do
-    if users = Accounts.get_users_by_email(email) do
-      Accounts.deliver_users_confirmation_instructions(
-        users,
-        &url(~p"/users/confirm/#{&1}")
+  def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
+    if user = Accounts.get_user_by_email(email) do
+      Accounts.deliver_user_confirmation_instructions(
+        user,
+        &url(~p"/user/confirm/#{&1}")
       )
     end
 

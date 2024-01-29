@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersResetPasswordLive do
+defmodule CklistWeb.UserResetPasswordLive do
   use CklistWeb, :live_view
 
   alias Cklist.Accounts
@@ -31,20 +31,20 @@ defmodule CklistWeb.UsersResetPasswordLive do
       </.simple_form>
 
       <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
+        <.link href={~p"/user/register"}>Register</.link>
+        | <.link href={~p"/user/log_in"}>Log in</.link>
       </p>
     </div>
     """
   end
 
   def mount(params, _session, socket) do
-    socket = assign_users_and_token(socket, params)
+    socket = assign_user_and_token(socket, params)
 
     form_source =
       case socket.assigns do
-        %{users: users} ->
-          Accounts.change_users_password(users)
+        %{user: user} ->
+          Accounts.change_user_password(user)
 
         _ ->
           %{}
@@ -53,29 +53,29 @@ defmodule CklistWeb.UsersResetPasswordLive do
     {:ok, assign_form(socket, form_source), temporary_assigns: [form: nil]}
   end
 
-  # Do not log in the users after reset password to avoid a
-  # leaked token giving the users access to the account.
-  def handle_event("reset_password", %{"users" => users_params}, socket) do
-    case Accounts.reset_users_password(socket.assigns.users, users_params) do
+  # Do not log in the user after reset password to avoid a
+  # leaked token giving the user access to the account.
+  def handle_event("reset_password", %{"user" => user_params}, socket) do
+    case Accounts.reset_user_password(socket.assigns.user, user_params) do
       {:ok, _} ->
         {:noreply,
          socket
          |> put_flash(:info, "Password reset successfully.")
-         |> redirect(to: ~p"/users/log_in")}
+         |> redirect(to: ~p"/user/log_in")}
 
       {:error, changeset} ->
         {:noreply, assign_form(socket, Map.put(changeset, :action, :insert))}
     end
   end
 
-  def handle_event("validate", %{"users" => users_params}, socket) do
-    changeset = Accounts.change_users_password(socket.assigns.users, users_params)
+  def handle_event("validate", %{"user" => user_params}, socket) do
+    changeset = Accounts.change_user_password(socket.assigns.user, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 
-  defp assign_users_and_token(socket, %{"token" => token}) do
-    if users = Accounts.get_users_by_reset_password_token(token) do
-      assign(socket, users: users, token: token)
+  defp assign_user_and_token(socket, %{"token" => token}) do
+    if user = Accounts.get_user_by_reset_password_token(token) do
+      assign(socket, user: user, token: token)
     else
       socket
       |> put_flash(:error, "Reset password link is invalid or it has expired.")
@@ -84,6 +84,6 @@ defmodule CklistWeb.UsersResetPasswordLive do
   end
 
   defp assign_form(socket, %{} = source) do
-    assign(socket, :form, to_form(source, as: "users"))
+    assign(socket, :form, to_form(source, as: "user"))
   end
 end

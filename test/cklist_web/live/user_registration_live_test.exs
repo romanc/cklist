@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersRegistrationLiveTest do
+defmodule CklistWeb.UserRegistrationLiveTest do
   use CklistWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -6,7 +6,7 @@ defmodule CklistWeb.UsersRegistrationLiveTest do
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
-      {:ok, _lv, html} = live(conn, ~p"/users/register")
+      {:ok, _lv, html} = live(conn, ~p"/user/register")
 
       assert html =~ "Register"
       assert html =~ "Log in"
@@ -15,20 +15,20 @@ defmodule CklistWeb.UsersRegistrationLiveTest do
     test "redirects if already logged in", %{conn: conn} do
       result =
         conn
-        |> log_in_users(users_fixture())
-        |> live(~p"/users/register")
+        |> log_in_user(user_fixture())
+        |> live(~p"/user/register")
         |> follow_redirect(conn, "/")
 
       assert {:ok, _conn} = result
     end
 
     test "renders errors for invalid data", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/user/register")
 
       result =
         lv
         |> element("#registration_form")
-        |> render_change(users: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
@@ -36,12 +36,12 @@ defmodule CklistWeb.UsersRegistrationLiveTest do
     end
   end
 
-  describe "register users" do
-    test "creates account and logs the users in", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+  describe "register user" do
+    test "creates account and logs the user in", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/user/register")
 
-      email = unique_users_email()
-      form = form(lv, "#registration_form", users: valid_users_attributes(email: email))
+      email = unique_user_email()
+      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
@@ -56,14 +56,14 @@ defmodule CklistWeb.UsersRegistrationLiveTest do
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/user/register")
 
-      users = users_fixture(%{email: "test@email.com"})
+      user = user_fixture(%{email: "test@email.com"})
 
       result =
         lv
         |> form("#registration_form",
-          users: %{"email" => users.email, "password" => "valid_password"}
+          user: %{"email" => user.email, "password" => "valid_password"}
         )
         |> render_submit()
 
@@ -73,13 +73,13 @@ defmodule CklistWeb.UsersRegistrationLiveTest do
 
   describe "registration navigation" do
     test "redirects to login page when the Log in button is clicked", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/user/register")
 
       {:ok, _login_live, login_html} =
         lv
         |> element(~s|main a:fl-contains("Sign in")|)
         |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
+        |> follow_redirect(conn, ~p"/user/log_in")
 
       assert login_html =~ "Log in"
     end
