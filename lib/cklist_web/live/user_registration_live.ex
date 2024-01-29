@@ -1,8 +1,8 @@
-defmodule CklistWeb.UsersRegistrationLive do
+defmodule CklistWeb.UserRegistrationLive do
   use CklistWeb, :live_view
 
   alias Cklist.Accounts
-  alias Cklist.Accounts.Users
+  alias Cklist.Accounts.User
 
   def render(assigns) do
     ~H"""
@@ -11,7 +11,7 @@ defmodule CklistWeb.UsersRegistrationLive do
         Register for an account
         <:subtitle>
           Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+          <.link navigate={~p"/user/log_in"} class="font-semibold text-brand hover:underline">
             Sign in
           </.link>
           to your account now.
@@ -24,7 +24,7 @@ defmodule CklistWeb.UsersRegistrationLive do
         phx-submit="save"
         phx-change="validate"
         phx-trigger-action={@trigger_submit}
-        action={~p"/users/log_in?_action=registered"}
+        action={~p"/user/log_in?_action=registered"}
         method="post"
       >
         <.error :if={@check_errors}>
@@ -43,7 +43,7 @@ defmodule CklistWeb.UsersRegistrationLive do
   end
 
   def mount(_params, _session, socket) do
-    changeset = Accounts.change_users_registration(%Users{})
+    changeset = Accounts.change_user_registration(%User{})
 
     socket =
       socket
@@ -53,16 +53,16 @@ defmodule CklistWeb.UsersRegistrationLive do
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
-  def handle_event("save", %{"users" => users_params}, socket) do
-    case Accounts.register_users(users_params) do
-      {:ok, users} ->
+  def handle_event("save", %{"user" => user_params}, socket) do
+    case Accounts.register_user(user_params) do
+      {:ok, user} ->
         {:ok, _} =
-          Accounts.deliver_users_confirmation_instructions(
-            users,
-            &url(~p"/users/confirm/#{&1}")
+          Accounts.deliver_user_confirmation_instructions(
+            user,
+            &url(~p"/user/confirm/#{&1}")
           )
 
-        changeset = Accounts.change_users_registration(users)
+        changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -70,13 +70,13 @@ defmodule CklistWeb.UsersRegistrationLive do
     end
   end
 
-  def handle_event("validate", %{"users" => users_params}, socket) do
-    changeset = Accounts.change_users_registration(%Users{}, users_params)
+  def handle_event("validate", %{"user" => user_params}, socket) do
+    changeset = Accounts.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    form = to_form(changeset, as: "users")
+    form = to_form(changeset, as: "user")
 
     if changeset.valid? do
       assign(socket, form: form, check_errors: false)

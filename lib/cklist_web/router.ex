@@ -1,7 +1,7 @@
 defmodule CklistWeb.Router do
   use CklistWeb, :router
 
-  import CklistWeb.UsersAuth
+  import CklistWeb.UserAuth
   require CklistWeb.Cldr
 
   pipeline :browser do
@@ -11,7 +11,7 @@ defmodule CklistWeb.Router do
     plug :put_root_layout, html: {CklistWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_users
+    plug :fetch_current_user
     plug(Cldr.Plug.PutLocale, apps: [:cldr, :gettext], cldr: CklistWeb.Cldr)
     plug(Cldr.Plug.AcceptLanguage, cldr_backend: CklistWeb.Cldr)
   end
@@ -53,26 +53,26 @@ defmodule CklistWeb.Router do
   ## Authentication routes
 
   scope "/", CklistWeb do
-    pipe_through [:browser, :redirect_if_users_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    live_session :redirect_if_users_is_authenticated,
-      on_mount: [{CklistWeb.UsersAuth, :redirect_if_users_is_authenticated}] do
-      live "/users/register", UsersRegistrationLive, :new
-      live "/users/log_in", UsersLoginLive, :new
-      live "/users/reset_password", UsersForgotPasswordLive, :new
-      live "/users/reset_password/:token", UsersResetPasswordLive, :edit
+    live_session :redirect_if_user_is_authenticated,
+      on_mount: [{CklistWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/user/register", UserRegistrationLive, :new
+      live "/user/log_in", UserLoginLive, :new
+      live "/user/reset_password", UserForgotPasswordLive, :new
+      live "/user/reset_password/:token", UserResetPasswordLive, :edit
     end
 
-    post "/users/log_in", UsersSessionController, :create
+    post "/user/log_in", UserSessionController, :create
   end
 
   scope "/", CklistWeb do
-    pipe_through [:browser, :require_authenticated_users]
+    pipe_through [:browser, :require_authenticated_user]
 
-    live_session :require_authenticated_users,
-      on_mount: [{CklistWeb.UsersAuth, :ensure_authenticated}] do
-      live "/users/settings", UsersSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UsersSettingsLive, :confirm_email
+    live_session :require_authenticated_user,
+      on_mount: [{CklistWeb.UserAuth, :ensure_authenticated}] do
+      live "/user/settings", UserSettingsLive, :edit
+      live "/user/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
 
     resources "/checklists", ChecklistController, except: [:index]
@@ -81,12 +81,12 @@ defmodule CklistWeb.Router do
   scope "/", CklistWeb do
     pipe_through [:browser]
 
-    delete "/users/log_out", UsersSessionController, :delete
+    delete "/user/log_out", UserSessionController, :delete
 
-    live_session :current_users,
-      on_mount: [{CklistWeb.UsersAuth, :mount_current_users}] do
-      live "/users/confirm/:token", UsersConfirmationLive, :edit
-      live "/users/confirm", UsersConfirmationInstructionsLive, :new
+    live_session :current_user,
+      on_mount: [{CklistWeb.UserAuth, :mount_current_user}] do
+      live "/user/confirm/:token", UserConfirmationLive, :edit
+      live "/user/confirm", UserConfirmationInstructionsLive, :new
     end
   end
 end

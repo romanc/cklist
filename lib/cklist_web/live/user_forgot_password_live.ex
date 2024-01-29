@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersForgotPasswordLive do
+defmodule CklistWeb.UserForgotPasswordLive do
   use CklistWeb, :live_view
 
   alias Cklist.Accounts
@@ -20,22 +20,22 @@ defmodule CklistWeb.UsersForgotPasswordLive do
         </:actions>
       </.simple_form>
       <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
+        <.link href={~p"/user/register"}>Register</.link>
+        | <.link href={~p"/user/log_in"}>Log in</.link>
       </p>
     </div>
     """
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, form: to_form(%{}, as: "users"))}
+    {:ok, assign(socket, form: to_form(%{}, as: "user"))}
   end
 
-  def handle_event("send_email", %{"users" => %{"email" => email}}, socket) do
-    if users = Accounts.get_users_by_email(email) do
-      Accounts.deliver_users_reset_password_instructions(
-        users,
-        &url(~p"/users/reset_password/#{&1}")
+  def handle_event("send_email", %{"user" => %{"email" => email}}, socket) do
+    if user = Accounts.get_user_by_email(email) do
+      Accounts.deliver_user_reset_password_instructions(
+        user,
+        &url(~p"/user/reset_password/#{&1}")
       )
     end
 

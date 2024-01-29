@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersSettingsLive do
+defmodule CklistWeb.UserSettingsLive do
   use CklistWeb, :live_view
 
   alias Cklist.Accounts
@@ -37,7 +37,7 @@ defmodule CklistWeb.UsersSettingsLive do
         <.simple_form
           for={@password_form}
           id="password_form"
-          action={~p"/users/log_in?_action=password_updated"}
+          action={~p"/user/log_in?_action=password_updated"}
           method="post"
           phx-change="validate_password"
           phx-submit="update_password"
@@ -46,7 +46,7 @@ defmodule CklistWeb.UsersSettingsLive do
           <.input
             field={@password_form[:email]}
             type="hidden"
-            id="hidden_users_email"
+            id="hidden_user_email"
             value={@current_email}
           />
           <.input field={@password_form[:password]} type="password" label="New password" required />
@@ -75,7 +75,7 @@ defmodule CklistWeb.UsersSettingsLive do
 
   def mount(%{"token" => token}, _session, socket) do
     socket =
-      case Accounts.update_users_email(socket.assigns.current_users, token) do
+      case Accounts.update_user_email(socket.assigns.current_user, token) do
         :ok ->
           put_flash(socket, :info, "Email changed successfully.")
 
@@ -83,19 +83,19 @@ defmodule CklistWeb.UsersSettingsLive do
           put_flash(socket, :error, "Email change link is invalid or it has expired.")
       end
 
-    {:ok, push_navigate(socket, to: ~p"/users/settings")}
+    {:ok, push_navigate(socket, to: ~p"/user/settings")}
   end
 
   def mount(_params, _session, socket) do
-    users = socket.assigns.current_users
-    email_changeset = Accounts.change_users_email(users)
-    password_changeset = Accounts.change_users_password(users)
+    user = socket.assigns.current_user
+    email_changeset = Accounts.change_user_email(user)
+    password_changeset = Accounts.change_user_password(user)
 
     socket =
       socket
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
-      |> assign(:current_email, users.email)
+      |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
@@ -104,11 +104,11 @@ defmodule CklistWeb.UsersSettingsLive do
   end
 
   def handle_event("validate_email", params, socket) do
-    %{"current_password" => password, "users" => users_params} = params
+    %{"current_password" => password, "user" => user_params} = params
 
     email_form =
-      socket.assigns.current_users
-      |> Accounts.change_users_email(users_params)
+      socket.assigns.current_user
+      |> Accounts.change_user_email(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
@@ -116,15 +116,15 @@ defmodule CklistWeb.UsersSettingsLive do
   end
 
   def handle_event("update_email", params, socket) do
-    %{"current_password" => password, "users" => users_params} = params
-    users = socket.assigns.current_users
+    %{"current_password" => password, "user" => user_params} = params
+    user = socket.assigns.current_user
 
-    case Accounts.apply_users_email(users, password, users_params) do
-      {:ok, applied_users} ->
-        Accounts.deliver_users_update_email_instructions(
-          applied_users,
-          users.email,
-          &url(~p"/users/settings/confirm_email/#{&1}")
+    case Accounts.apply_user_email(user, password, user_params) do
+      {:ok, applied_user} ->
+        Accounts.deliver_user_update_email_instructions(
+          applied_user,
+          user.email,
+          &url(~p"/user/settings/confirm_email/#{&1}")
         )
 
         info = "A link to confirm your email change has been sent to the new address."
@@ -136,11 +136,11 @@ defmodule CklistWeb.UsersSettingsLive do
   end
 
   def handle_event("validate_password", params, socket) do
-    %{"current_password" => password, "users" => users_params} = params
+    %{"current_password" => password, "user" => user_params} = params
 
     password_form =
-      socket.assigns.current_users
-      |> Accounts.change_users_password(users_params)
+      socket.assigns.current_user
+      |> Accounts.change_user_password(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
@@ -148,14 +148,14 @@ defmodule CklistWeb.UsersSettingsLive do
   end
 
   def handle_event("update_password", params, socket) do
-    %{"current_password" => password, "users" => users_params} = params
-    users = socket.assigns.current_users
+    %{"current_password" => password, "user" => user_params} = params
+    user = socket.assigns.current_user
 
-    case Accounts.update_users_password(users, password, users_params) do
-      {:ok, users} ->
+    case Accounts.update_user_password(user, password, user_params) do
+      {:ok, user} ->
         password_form =
-          users
-          |> Accounts.change_users_password(users_params)
+          user
+          |> Accounts.change_user_password(user_params)
           |> to_form()
 
         {:noreply, assign(socket, trigger_submit: true, password_form: password_form)}

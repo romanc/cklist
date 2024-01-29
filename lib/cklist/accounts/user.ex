@@ -1,4 +1,4 @@
-defmodule Cklist.Accounts.Users do
+defmodule Cklist.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -12,7 +12,7 @@ defmodule Cklist.Accounts.Users do
   end
 
   @doc """
-  A users changeset for registration.
+  A user changeset for registration.
 
   It is important to validate the length of both email and password.
   Otherwise databases may truncate the email without warnings, which
@@ -34,8 +34,8 @@ defmodule Cklist.Accounts.Users do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def registration_changeset(users, attrs, opts \\ []) do
-    users
+  def registration_changeset(user, attrs, opts \\ []) do
+    user
     |> cast(attrs, [:email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
@@ -88,12 +88,12 @@ defmodule Cklist.Accounts.Users do
   end
 
   @doc """
-  A users changeset for changing the email.
+  A user changeset for changing the email.
 
   It requires the email to change otherwise an error is added.
   """
-  def email_changeset(users, attrs, opts \\ []) do
-    users
+  def email_changeset(user, attrs, opts \\ []) do
+    user
     |> cast(attrs, [:email])
     |> validate_email(opts)
     |> case do
@@ -103,7 +103,7 @@ defmodule Cklist.Accounts.Users do
   end
 
   @doc """
-  A users changeset for changing the password.
+  A user changeset for changing the password.
 
   ## Options
 
@@ -114,8 +114,8 @@ defmodule Cklist.Accounts.Users do
       validations on a LiveView form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def password_changeset(users, attrs, opts \\ []) do
-    users
+  def password_changeset(user, attrs, opts \\ []) do
+    user
     |> cast(attrs, [:password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
@@ -124,18 +124,18 @@ defmodule Cklist.Accounts.Users do
   @doc """
   Confirms the account by setting `confirmed_at`.
   """
-  def confirm_changeset(users) do
+  def confirm_changeset(user) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    change(users, confirmed_at: now)
+    change(user, confirmed_at: now)
   end
 
   @doc """
   Verifies the password.
 
-  If there is no users or the users doesn't have a password, we call
+  If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%Cklist.Accounts.Users{hashed_password: hashed_password}, password)
+  def valid_password?(%Cklist.Accounts.User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end

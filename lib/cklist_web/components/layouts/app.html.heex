@@ -9,18 +9,18 @@
       </p>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <%= if @current_users do %>
+      <%= if @current_user do %>
         <p>
-          <%= @current_users.email %>
+          <%= @current_user.email %>
         </p>
         <.link
-          href={~p"/users/settings"}
+          href={~p"/user/settings"}
           class="hover:text-zinc-700"
         >
           Settings
         </.link>
         <.link
-          href={~p"/users/log_out"}
+          href={~p"/user/log_out"}
           method="delete"
           class="hover:text-zinc-700"
         >
@@ -28,13 +28,13 @@
         </.link>
       <% else %>
         <.link
-          href={~p"/users/register"}
+          href={~p"/user/register"}
           class="hover:text-zinc-700"
         >
           Register
         </.link>
         <.link
-          href={~p"/users/log_in"}
+          href={~p"/user/log_in"}
           class="hover:text-zinc-700"
         >
           Log in
