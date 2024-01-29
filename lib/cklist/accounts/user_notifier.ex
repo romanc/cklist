@@ -1,4 +1,4 @@
-defmodule Cklist.Accounts.UsersNotifier do
+defmodule Cklist.Accounts.UserNotifier do
   import Swoosh.Email
 
   alias Cklist.Mailer
@@ -20,12 +20,12 @@ defmodule Cklist.Accounts.UsersNotifier do
   @doc """
   Deliver instructions to confirm account.
   """
-  def deliver_confirmation_instructions(users, url) do
-    deliver(users.email, "Confirmation instructions", """
+  def deliver_confirmation_instructions(user, url) do
+    deliver(user.email, "Confirmation instructions", """
 
     ==============================
 
-    Hi #{users.email},
+    Hi #{user.email},
 
     You can confirm your account by visiting the URL below:
 
@@ -38,14 +38,14 @@ defmodule Cklist.Accounts.UsersNotifier do
   end
 
   @doc """
-  Deliver instructions to reset a users password.
+  Deliver instructions to reset a user password.
   """
-  def deliver_reset_password_instructions(users, url) do
-    deliver(users.email, "Reset password instructions", """
+  def deliver_reset_password_instructions(user, url) do
+    deliver(user.email, "Reset password instructions", """
 
     ==============================
 
-    Hi #{users.email},
+    Hi #{user.email},
 
     You can reset your password by visiting the URL below:
 
@@ -58,14 +58,14 @@ defmodule Cklist.Accounts.UsersNotifier do
   end
 
   @doc """
-  Deliver instructions to update a users email.
+  Deliver instructions to update a user email.
   """
-  def deliver_update_email_instructions(users, url) do
-    deliver(users.email, "Update email instructions", """
+  def deliver_update_email_instructions(user, url) do
+    deliver(user.email, "Update email instructions", """
 
     ==============================
 
-    Hi #{users.email},
+    Hi #{user.email},
 
     You can change your email by visiting the URL below:
 

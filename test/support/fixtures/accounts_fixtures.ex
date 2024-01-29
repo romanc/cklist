@@ -4,26 +4,26 @@ defmodule Cklist.AccountsFixtures do
   entities via the `Cklist.Accounts` context.
   """
 
-  def unique_users_email, do: "users#{System.unique_integer()}@example.com"
-  def valid_users_password, do: "hello world!"
+  def unique_user_email, do: "user#{System.unique_integer()}@example.com"
+  def valid_user_password, do: "hello world!"
 
-  def valid_users_attributes(attrs \\ %{}) do
+  def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
-      email: unique_users_email(),
-      password: valid_users_password()
+      email: unique_user_email(),
+      password: valid_user_password()
     })
   end
 
-  def users_fixture(attrs \\ %{}) do
-    {:ok, users} =
+  def user_fixture(attrs \\ %{}) do
+    {:ok, user} =
       attrs
-      |> valid_users_attributes()
-      |> Cklist.Accounts.register_users()
+      |> valid_user_attributes()
+      |> Cklist.Accounts.register_user()
 
-    users
+    user
   end
 
-  def extract_users_token(fun) do
+  def extract_user_token(fun) do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token

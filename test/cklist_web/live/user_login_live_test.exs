@@ -1,4 +1,4 @@
-defmodule CklistWeb.UsersLoginLiveTest do
+defmodule CklistWeb.UserLoginLiveTest do
   use CklistWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -6,7 +6,7 @@ defmodule CklistWeb.UsersLoginLiveTest do
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
-      {:ok, _lv, html} = live(conn, ~p"/users/log_in")
+      {:ok, _lv, html} = live(conn, ~p"/user/log_in")
 
       assert html =~ "Log in"
       assert html =~ "Register"
@@ -16,23 +16,23 @@ defmodule CklistWeb.UsersLoginLiveTest do
     test "redirects if already logged in", %{conn: conn} do
       result =
         conn
-        |> log_in_users(users_fixture())
-        |> live(~p"/users/log_in")
+        |> log_in_user(user_fixture())
+        |> live(~p"/user/log_in")
         |> follow_redirect(conn, "/")
 
       assert {:ok, _conn} = result
     end
   end
 
-  describe "users login" do
-    test "redirects if users login with valid credentials", %{conn: conn} do
+  describe "user login" do
+    test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
-      users = users_fixture(%{password: password})
+      user = user_fixture(%{password: password})
 
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/user/log_in")
 
       form =
-        form(lv, "#login_form", users: %{email: users.email, password: password, remember_me: true})
+        form(lv, "#login_form", user: %{email: user.email, password: password, remember_me: true})
 
       conn = submit_form(form, conn)
 
@@ -42,30 +42,30 @@ defmodule CklistWeb.UsersLoginLiveTest do
     test "redirects to login page with a flash error if there are no valid credentials", %{
       conn: conn
     } do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/user/log_in")
 
       form =
         form(lv, "#login_form",
-          users: %{email: "test@email.com", password: "123456", remember_me: true}
+          user: %{email: "test@email.com", password: "123456", remember_me: true}
         )
 
       conn = submit_form(form, conn)
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
 
-      assert redirected_to(conn) == "/users/log_in"
+      assert redirected_to(conn) == "/user/log_in"
     end
   end
 
   describe "login navigation" do
     test "redirects to registration page when the Register button is clicked", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/user/log_in")
 
       {:ok, _login_live, login_html} =
         lv
         |> element(~s|main a:fl-contains("Sign up")|)
         |> render_click()
-        |> follow_redirect(conn, ~p"/users/register")
+        |> follow_redirect(conn, ~p"/user/register")
 
       assert login_html =~ "Register"
     end
@@ -73,13 +73,13 @@ defmodule CklistWeb.UsersLoginLiveTest do
     test "redirects to forgot password page when the Forgot Password button is clicked", %{
       conn: conn
     } do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/user/log_in")
 
       {:ok, conn} =
         lv
         |> element(~s|main a:fl-contains("Forgot your password?")|)
         |> render_click()
-        |> follow_redirect(conn, ~p"/users/reset_password")
+        |> follow_redirect(conn, ~p"/user/reset_password")
 
       assert conn.resp_body =~ "Forgot your password?"
     end
