@@ -11,7 +11,7 @@
 <.list>
   <:item title="Title"><%= @checklist.title %></:item>
   <:item title="Description"><%= @checklist.description %></:item>
-  <:item title="Document"><%= @checklist.document %></:item>
+  <:item title="Document"><%= "#{inspect @checklist.document}" %></:item>
 </.list>
 
 <.back navigate={~p"/checklists"}>Back to checklists</.back>
