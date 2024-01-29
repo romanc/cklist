@@ -2,10 +2,29 @@ defmodule CklistWeb.ChecklistControllerTest do
   use CklistWeb.ConnCase
 
   import Cklist.ChecklistsFixtures
+  import Cklist.AccountsFixtures
 
   @create_attrs %{description: "some description", title: "some title", document: %{}}
-  @update_attrs %{description: "some updated description", title: "some updated title", document: %{}}
+  @update_attrs %{
+    description: "some updated description",
+    title: "some updated title",
+    document: %{}
+  }
   @invalid_attrs %{description: nil, title: nil, document: nil}
+
+  @remember_me_cookie "_cklist_web_user_remember_me"
+
+  setup %{conn: conn} do
+    user_token = Cklist.Accounts.generate_user_session_token(user_fixture())
+
+    %{
+      conn:
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_token, user_token)
+        |> put_req_cookie(@remember_me_cookie, user_token)
+    }
+  end
 
   describe "index" do
     test "lists all checklists", %{conn: conn} do
