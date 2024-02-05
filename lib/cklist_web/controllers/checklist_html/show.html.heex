@@ -11,7 +11,14 @@
 <.list>
   <:item title="Title"><%= @checklist.title %></:item>
   <:item title="Description"><%= @checklist.description %></:item>
-  <:item title="Document"><%= "#{inspect @checklist.document}" %></:item>
+  <:item title="Sequential"><%= @checklist.document["sequential"] %></:item>
+  <:item title="Steps">
+    <ul class="list-disc list-inside">
+      <%= for step <- @checklist.document["steps"] do %>
+        <li><%= step["name"] %></li>
+      <% end %>
+    </ul>
+  </:item>
 </.list>
 
 <.back navigate={~p"/checklists"}>Back to checklists</.back>
