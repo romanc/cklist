@@ -16,6 +16,13 @@ defmodule CklistWeb.ChecklistController do
 
   def create(conn, %{"checklist" => checklist_params}) do
     checklist_params = Map.put(checklist_params, "user_id", conn.assigns.current_user.id)
+    checklist_params = Map.put(checklist_params, "document", %{
+      version: "0.1",
+      sequential: false,
+      steps: [
+        %{ name: "one thing" },
+        %{ name: "that other thing" }
+      ]})
 
     case Checklists.create_checklist(checklist_params) do
       {:ok, checklist} ->
