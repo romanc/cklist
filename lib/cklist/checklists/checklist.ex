@@ -14,7 +14,7 @@ defmodule Cklist.Checklists.Checklist do
   @doc false
   def changeset(checklist, attrs) do
     checklist
-    |> cast(attrs, [:title, :description, :document])
-    |> validate_required([:title, :description])
+    |> cast(attrs, [:title, :description, :document, :user_id])
+    |> validate_required([:title, :description, :user_id])
   end
 end
