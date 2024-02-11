@@ -7,6 +7,7 @@ defmodule Cklist.Checklists.Checklist do
     field :title, :string
     field :document, :map
     field :user_id, :id
+    field :access, Ecto.Enum, values: [:public, :personal]
 
     timestamps(type: :utc_datetime)
   end
@@ -14,7 +15,7 @@ defmodule Cklist.Checklists.Checklist do
   @doc false
   def changeset(checklist, attrs) do
     checklist
-    |> cast(attrs, [:title, :description, :document, :user_id])
-    |> validate_required([:title, :description, :document, :user_id])
+    |> cast(attrs, [:title, :description, :document, :user_id, :access])
+    |> validate_required([:title, :description, :document, :user_id, :access])
   end
 end

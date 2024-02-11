@@ -7,12 +7,14 @@ defmodule Cklist.ChecklistsTest do
     alias Cklist.Checklists.Checklist
 
     import Cklist.ChecklistsFixtures
+    import Cklist.AccountsFixtures
 
     @invalid_attrs %{description: nil, title: nil, document: nil}
 
-    test "list_checklists/0 returns all checklists" do
-      checklist = checklist_fixture()
-      assert Checklists.list_checklists() == [checklist]
+    test "list_checklists/1 returns all checklists except private ones of other users" do
+      id = user_fixture().id
+      checklists = multiple_checklist_fixture(%{id1: id, id2: user_fixture().id})
+      assert Checklists.list_checklists(%{id: id}) == checklists
     end
 
     test "get_checklist!/1 returns the checklist with given id" do
@@ -21,7 +23,7 @@ defmodule Cklist.ChecklistsTest do
     end
 
     test "create_checklist/1 with valid data creates a checklist" do
-      valid_attrs = %{description: "some description", title: "some title", document: %{}}
+      valid_attrs = %{description: "some description", title: "some title", user_id: 1, access: "personal", document: %{}}
 
       assert {:ok, %Checklist{} = checklist} = Checklists.create_checklist(valid_attrs)
       assert checklist.description == "some description"

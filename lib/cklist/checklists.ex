@@ -17,9 +17,15 @@ defmodule Cklist.Checklists do
       [%Checklist{}, ...]
 
   """
-  def list_checklists do
-    Repo.all(Checklist)
+  def list_checklists(nil) do
+    query = from l in Checklist, where: l.access == :public
+    Repo.all(query)
   end
+  def list_checklists(user) do
+    query = from l in Checklist, where: l.user_id == ^user.id or l.access == :public
+    Repo.all(query)
+  end
+
 
   @doc """
   Gets a single checklist.

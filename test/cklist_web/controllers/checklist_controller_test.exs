@@ -4,11 +4,19 @@ defmodule CklistWeb.ChecklistControllerTest do
   import Cklist.ChecklistsFixtures
   import Cklist.AccountsFixtures
 
-  @create_attrs %{description: "some description", title: "some title", document: %{}}
+  @create_attrs %{
+    description: "some description",
+    title: "some title",
+    document: %{},
+    user_id: 1,
+    access: "personal"
+  }
   @update_attrs %{
     description: "some updated description",
     title: "some updated title",
-    document: %{}
+    document: %{},
+    user_id: 1,
+    access: "personal"
   }
   @invalid_attrs %{description: nil, title: nil, document: nil}
 
