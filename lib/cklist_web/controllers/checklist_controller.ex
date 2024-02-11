@@ -5,7 +5,7 @@ defmodule CklistWeb.ChecklistController do
   alias Cklist.Checklists.Checklist
 
   def index(conn, _params) do
-    checklists = Checklists.list_checklists()
+    checklists = Checklists.list_checklists(conn.assigns.current_user)
     render(conn, :index, checklists: checklists)
   end
 
