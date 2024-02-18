@@ -73,6 +73,8 @@ defmodule CklistWeb.Router do
       on_mount: [{CklistWeb.UserAuth, :ensure_authenticated}] do
       live "/user/settings", UserSettingsLive, :edit
       live "/user/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/checklists/:id/run", CklistRunLive
     end
 
     resources "/checklists", ChecklistController, except: [:index]

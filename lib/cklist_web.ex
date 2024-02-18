@@ -85,6 +85,7 @@ defmodule CklistWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import CklistWeb.CoreComponents
+      import CklistWeb.MyComponents
       import Cklist.Gettext
 
       # Shortcut for generating JS commands
