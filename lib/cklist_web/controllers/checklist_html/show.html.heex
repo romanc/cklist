@@ -2,8 +2,19 @@
   Checklist <%= @checklist.id %>
   <:subtitle>This is a checklist record from your database.</:subtitle>
   <:actions>
+    <.link href={~p"/checklists/#{@checklist}/run"}>
+      <.button>
+        Run
+        &nbsp;
+        <img src={~p"/images/play.svg"} alt="Run this checklist" title="Run this checklist" width="16" height="16" class="inline invert" />
+      </.button>
+    </.link>
     <.link href={~p"/checklists/#{@checklist}/edit"}>
-      <.button>Edit checklist</.button>
+      <.button>
+        Edit
+        &nbsp;
+        <img src={~p"/images/edit.svg"} alt="Run this checklist" title="Run this checklist" width="16" height="16" class="inline invert" />
+      </.button>
     </.link>
   </:actions>
 </.header>
