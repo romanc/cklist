@@ -18,10 +18,11 @@ defmodule CklistWeb.ChecklistController do
     checklist_params = Map.put(checklist_params, "user_id", conn.assigns.current_user.id)
     checklist_params = Map.put(checklist_params, "document", %{
       version: "0.1",
-      sequential: false,
+      sequential: true,
       steps: [
-        %{ name: "one thing" },
-        %{ name: "that other thing" }
+        %{ name: "first thing" },
+        %{ name: "second thing" },
+        %{ name: "third thing" },
       ]})
 
     case Checklists.create_checklist(checklist_params) do
