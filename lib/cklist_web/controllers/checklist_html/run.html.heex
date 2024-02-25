@@ -19,10 +19,10 @@
     />
   </form>
 
-  <div class="flex flex-row">
+  <div class="flex flex-row my-8">
     <button
       disabled={@steps != @steps_done}
-      class={"basis-full my-8 py-2 background rounded-lg #{if @steps === @steps_done, do: "bg-lime-500 hover:bg-lime-400", else: "bg-gray-300 hover:bg-gray-400"}"}
+      class={"basis-full py-2 rounded-lg #{if @steps === @steps_done, do: "bg-lime-500 hover:bg-lime-400", else: "bg-gray-300 hover:bg-gray-400"}"}
       phx-click="completed"
     >
       Done!
@@ -36,7 +36,38 @@
 
 <% else %>
 
-This one is sequential.
+<div class="mt-4">
+  <%= if @completed do %>
+    <p>Look at all the things you did:</p>
+    <ul class="mt-2 list-disc list-inside">
+      <%= for step <- @checklist.document["steps"] do %>
+        <li><%= step["name"] %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-lg">Current step: <%= @current_step["name"] %></p>
+    <%= if @next_step do %>
+      <p class="text-sm">Next step: <%= @next_step["name"] %></p>
+    <% end %>
+  <% end %>
+</div>
+
+<div class={"flex flex row my-8 #{if @completed, do: "justify-end", else: "justify-between"}"}>
+  <button
+    class={"basis-1/3 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 #{if @completed, do: "hidden", else: ""}"}
+    phx-click="abort"
+    data-confirm="Are you sure?"
+  >
+    Abort
+  </button>
+
+  <button
+    class="basis-1/3 py-2 rounded-lg bg-lime-500 hover:bg-lime-400"
+    phx-click="next_step"
+  >
+    <%= if @completed, do: "Awesome!", else: "Next" %>
+  </button>
+</div>
 
 <% end %>
 
