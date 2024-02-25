@@ -12,9 +12,14 @@ defmodule CklistWeb.CklistRunLive do
     socket = socket
       |> assign(:checklist, checklist)
       |> assign(:steps, length(checklist.document["steps"]))
-      |> assign(:done, 0)
+      |> assign(:steps_done, 0)
+      |> assign(:completed, false)
       |> assign(:step_state, %{})
     {:ok, socket}
+  end
+
+  def handle_event("completed", _params, socket) do
+    { :noreply, assign(socket, :completed, true) }
   end
 
   def handle_event("step_done", params, %{assigns: assigns} = socket) do
@@ -25,7 +30,7 @@ defmodule CklistWeb.CklistRunLive do
       :noreply,
       socket
       |> assign(:step_state, updated_state)
-      |> assign(:done, Enum.reduce(updated_state,  0, &is_done/2))
+      |> assign(:steps_done, Enum.reduce(updated_state,  0, &is_done/2))
     }
   end
 

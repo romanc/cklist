@@ -17,7 +17,7 @@ defmodule CklistWeb.MyComponents do
 
   def progress_bar(assigns) do
     ~H"""
-    <div class="my-4 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" id="checklist_progress">
+    <div class="my-8 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" id="checklist_progress">
       <div class="bg-blue-600 h-2.5 rounded-full" style={"width: #{@done/@steps * 100}%"}></div>
     </div>
     """
