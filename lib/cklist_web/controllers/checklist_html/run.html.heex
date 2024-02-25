@@ -3,20 +3,36 @@
   <:subtitle><%= @checklist.description %></:subtitle>
 </.header>
 
-<.progress_bar steps={@steps} done={@done} />
+<.progress_bar steps={@steps} done={@steps_done} />
 
 <%= if @checklist.document["sequential"] == false do %>
 
-<form id="checklist_run_form">
-  <.input 
-    :for={step <- @checklist.document["steps"]}
-    phx-change="step_done"
-    checked={Map.get(@step_state, step["name"], false)}
-    id={step["name"]}
-    type="checkbox" label={step["name"]} 
-    name={step["name"]}
-  />
-</form>
+  <form id="checklist_run_form">
+    <.input
+      :for={step <- @checklist.document["steps"]}
+      phx-change="step_done"
+      checked={Map.get(@step_state, step["name"], false)}
+      id={step["name"]}
+      type="checkbox" label={step["name"]}
+      name={step["name"]}
+      disabled={@completed}
+    />
+  </form>
+
+  <div class="flex flex-row">
+    <button
+      disabled={@steps != @steps_done}
+      class={"basis-full my-8 py-2 background rounded-lg #{if @steps === @steps_done, do: "bg-lime-500 hover:bg-lime-400", else: "bg-gray-300 hover:bg-gray-400"}"}
+      phx-click="completed"
+    >
+      Done!
+    </button>
+  </div>
+
+  <div class={"mt-4 #{if @completed, do: "", else: "hidden"}"}>
+    <p class="text-xl">Congratulations! 🎉</p>
+    <p class="text-zinc-600 text-medium mt-1">You finished the checklist.</p>
+  </div>
 
 <% else %>
 
