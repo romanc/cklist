@@ -24,17 +24,15 @@ defmodule CklistWeb.CklistRunLive do
   def handle_event("step_done", params, %{assigns: assigns} = socket) do
     [step_name] = params["_target"]
     updated_state = Map.put(assigns.step_state, step_name, Map.get(params, step_name) == "true")
+    updated_steps_done = Enum.reduce(updated_state,  0, &is_done/2)
 
     {
       :noreply,
       socket
       |> assign(:step_state, updated_state)
-      |> assign(:steps_done, Enum.reduce(updated_state,  0, &is_done/2))
+      |> assign(:steps_done, updated_steps_done)
+      |> assign(:completed, updated_steps_done === assigns.steps)
     }
-  end
-
-  def handle_event("completed", _params, socket) do
-    { :noreply, assign(socket, :completed, true) }
   end
 
   def handle_event("abort", _params, %{assigns: assigns} = socket) do
