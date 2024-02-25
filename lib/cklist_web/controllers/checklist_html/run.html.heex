@@ -1,0 +1,28 @@
+<.header>
+  <%= @checklist.title %>
+  <:subtitle><%= @checklist.description %></:subtitle>
+</.header>
+
+<.progress_bar steps={@steps} done={@done} />
+
+<%= if @checklist.document["sequential"] == false do %>
+
+<form id="checklist_run_form">
+  <.input 
+    :for={step <- @checklist.document["steps"]}
+    phx-change="step_done"
+    checked={Map.get(@step_state, step["name"], false)}
+    id={step["name"]}
+    type="checkbox" label={step["name"]} 
+    name={step["name"]}
+  />
+</form>
+
+<% else %>
+
+This one is sequential.
+
+<% end %>
+
+<.back navigate={~p"/checklists/#{@checklist}"}>Back to checklist</.back>
+ 

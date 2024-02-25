@@ -4,39 +4,7 @@ defmodule CklistWeb.CklistRunLive do
   alias Cklist.Checklists
 
   def render(assigns) do
-    case assigns.checklist.document do
-      %{"version" => "0.1", "sequential" => true} -> render_sequential(assigns)
-      %{"version" => "0.1", "sequential" => false} -> render_unordered(assigns)
-    end
-  end
-
-  def render_sequential(assigns) do
-    ~H"""
-    <.header>
-      Checklist <%= @checklist.id %>
-      <:subtitle>This renders a sequential checklist.</:subtitle>
-    </.header>
-    """
-  end
-
-  def render_unordered(assigns) do
-    ~H"""
-    <.header>
-      <%= @checklist.title %>
-      <:subtitle><%= @checklist.description %></:subtitle>
-    </.header>
-
-    <p>&nbsp;</p>
-    <.progress steps={@steps} done={@done} />
-
-    <form>
-    <%= for step <- @checklist.document["steps"] do %>
-      <.input type="checkbox" label={step["name"]} name={step["name"]} phx-change="step_done" />
-    <% end %>
-    </form>
-
-    <.back navigate={~p"/checklists/#{@checklist}"}>Back to checklist</.back>
-    """
+    CklistWeb.ChecklistHTML.run(assigns)
   end
 
   def mount(%{"id" => id}, _session, socket) do
@@ -45,10 +13,22 @@ defmodule CklistWeb.CklistRunLive do
       |> assign(:checklist, checklist)
       |> assign(:steps, length(checklist.document["steps"]))
       |> assign(:done, 0)
+      |> assign(:step_state, %{})
     {:ok, socket}
   end
 
-  def handle_event("step_done", _params, socket) do
-    {:noreply, update(socket, :done, &(&1 + 1))}
+  def handle_event("step_done", params, %{assigns: assigns} = socket) do
+    [step_name] = params["_target"]
+    updated_state = Map.put(assigns.step_state, step_name, Map.get(params, step_name) == "true")
+
+    {
+      :noreply,
+      socket
+      |> assign(:step_state, updated_state)
+      |> assign(:done, Enum.reduce(updated_state,  0, &is_done/2))
+    }
   end
+
+  defp is_done({_, true}, count), do: count + 1
+  defp is_done(_, count), do: count
 end
