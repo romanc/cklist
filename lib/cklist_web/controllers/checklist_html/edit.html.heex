@@ -1,0 +1,8 @@
+<.header>
+  Edit Checklist <%= @checklist.id %>
+  <:subtitle>Use this form to manage checklist records in your database.</:subtitle>
+</.header>
+
+<.checklist_form changeset={@changeset} action={~p"/checklists/#{@checklist}"} />
+
+<.back navigate={~p"/checklists"}>Back to checklists</.back>
