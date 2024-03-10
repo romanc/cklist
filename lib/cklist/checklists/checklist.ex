@@ -9,6 +9,7 @@ defmodule Cklist.Checklists.Checklist do
     field :access, Ecto.Enum, values: [:public, :personal]
 
     belongs_to :user, Cklist.Accounts.User
+    has_many :runs, Cklist.Checklists.Run
 
     timestamps(type: :utc_datetime)
   end

@@ -8,12 +8,14 @@ defmodule CklistWeb.CklistRunLive do
   end
 
   def mount(%{"id" => id}, _session, socket) do
-    checklist = Checklists.get_checklist!(id)
+    user = socket.assigns.current_user
 
-    # Log: cklist started
+    checklist = Checklists.get_checklist!(id)
+    run = Checklists.log_run_start(checklist, user)
 
     socket = socket
       |> assign(:checklist, checklist)
+      |> assign(:run, run)
       |> assign(:steps, length(checklist.document["steps"]))
       |> assign(:steps_done, 0)
       |> assign(:completed, false)
@@ -26,8 +28,7 @@ defmodule CklistWeb.CklistRunLive do
 
   # Handles aborting a checklist.
   def handle_event("abort", _params, %{assigns: assigns} = socket) do
-    # Log: cklist aborted
-
+    Checklists.log_run_abort(assigns.run, assigns.current_user)
     {
       :noreply,
       socket
@@ -40,7 +41,6 @@ defmodule CklistWeb.CklistRunLive do
   def handle_event("next_step", _params, %{assigns: assigns} = socket) do
     case assigns.completed do
       true ->
-        # Log: cklist completed
         {
         :noreply,
         socket
@@ -48,9 +48,12 @@ defmodule CklistWeb.CklistRunLive do
           |> redirect(to: ~p"/checklists/#{assigns.checklist}")
         }
       false ->
-        # Log: cklist step completed
+        Checklists.log_step_complete(assigns.run, assigns.current_user, assigns.steps_done)
         updated_steps_done = assigns.steps_done + 1
         completed = assigns.steps === updated_steps_done
+        if completed do
+          Checklists.log_run_complete(assigns.run, assigns.current_user)
+        end
         {
         :noreply,
         socket
@@ -65,17 +68,24 @@ defmodule CklistWeb.CklistRunLive do
   # Handles "step_done" events for non-sequential checklists.
   def handle_event("step_done", params, %{assigns: assigns} = socket) do
     [step_name] = params["_target"]
-    updated_state = Map.put(assigns.step_state, step_name, Map.get(params, step_name) == "true")
+    is_done = Map.get(params, step_name) == "true"
+    updated_state = Map.put(assigns.step_state, step_name, is_done)
     updated_steps_done = Enum.reduce(updated_state,  0, &is_done/2)
 
-    # Log cklist step completed
+    step_id = Enum.find_index(assigns.checklist.document["steps"], &(&1["name"] == step_name))
+    Checklists.log_step_complete(assigns.run, assigns.current_user, step_id, is_done)
+
+    completed = updated_steps_done === assigns.steps
+    if completed do
+      Checklists.log_run_complete(assigns.run, assigns.current_user)
+    end
 
     {
       :noreply,
       socket
       |> assign(:step_state, updated_state)
       |> assign(:steps_done, updated_steps_done)
-      |> assign(:completed, updated_steps_done === assigns.steps)
+      |> assign(:completed, completed)
     }
   end
 
