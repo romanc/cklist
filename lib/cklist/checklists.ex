@@ -4,9 +4,10 @@ defmodule Cklist.Checklists do
   """
 
   import Ecto.Query, warn: false
-  alias Cklist.Repo
-
+  alias Cklist.Checklists.Run
+  alias Cklist.Checklists.Activity
   alias Cklist.Checklists.Checklist
+  alias Cklist.Repo
 
   @doc """
   Returns the list of checklists.
@@ -106,5 +107,36 @@ defmodule Cklist.Checklists do
   """
   def change_checklist(%Checklist{} = checklist, attrs \\ %{}) do
     Checklist.changeset(checklist, attrs)
+  end
+
+  def log_run_start(checklist, user) do
+    {:ok, run} = %Run{}
+      |> Run.changeset(%{checklist_id: checklist.id})
+      |> Repo.insert()
+
+    %Activity{}
+      |> Activity.changeset(%{run_id: run.id, user_id: user.id, event: %{type: "checklist_start"}})
+      |> Repo.insert()
+
+    # return current run
+    run
+  end
+
+  def log_run_abort(run, user) do
+    %Activity{}
+      |> Activity.changeset(%{run_id: run.id, user_id: user.id, event: %{type: "checklist_abort"}})
+      |> Repo.insert()
+  end
+
+  def log_run_complete(run, user) do
+    %Activity{}
+      |> Activity.changeset(%{run_id: run.id, user_id: user.id, event: %{type: "checklist_complete"}})
+      |> Repo.insert()
+  end
+
+  def log_step_complete(run, user, step_id, is_done \\ true) do
+    %Activity{}
+      |> Activity.changeset(%{run_id: run.id, user_id: user.id, event: %{type: "step_done", step_id: step_id, done: is_done}})
+      |> Repo.insert()
   end
 end
