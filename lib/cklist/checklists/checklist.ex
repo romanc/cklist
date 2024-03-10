@@ -6,8 +6,9 @@ defmodule Cklist.Checklists.Checklist do
     field :description, :string
     field :title, :string
     field :document, :map
-    field :user_id, :id
     field :access, Ecto.Enum, values: [:public, :personal]
+
+    belongs_to :user, Cklist.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
