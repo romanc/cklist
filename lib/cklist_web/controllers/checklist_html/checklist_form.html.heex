@@ -5,6 +5,7 @@
   <.input field={f[:title]} type="text" label="Title" />
   <.input field={f[:description]} type="text" label="Description" />
   <.input field={f[:access]} type="select" options={[Personal: "personal", Public: "public"]} label="Access" />
+  <.input field={f[:sequential]} type="select" options={[True: true, False: false]} label="Sequential" />
   <:actions>
     <.button>Save Checklist</.button>
   </:actions>
