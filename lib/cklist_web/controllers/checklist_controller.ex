@@ -15,9 +15,13 @@ defmodule CklistWeb.ChecklistController do
   end
 
   def create(conn, %{"checklist" => checklist_params}) do
-    checklist_params = Map.put(checklist_params, "user_id", conn.assigns.current_user.id)
+    data = %{}
+    |> Map.put("sequential", Map.get(checklist_params, "sequential"))
+    |> Map.put("steps", Map.get(checklist_params, "steps", []))
 
-    # TODO: insert document here
+    checklist_params = checklist_params
+    |> Map.put("user_id", conn.assigns.current_user.id)
+    |> Map.put("document", data)
 
     case Checklists.create_checklist(checklist_params) do
       {:ok, checklist} ->
