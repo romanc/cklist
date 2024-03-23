@@ -2,16 +2,10 @@ defmodule CklistWeb.ChecklistController do
   use CklistWeb, :controller
 
   alias Cklist.Checklists
-  alias Cklist.Checklists.Checklist
 
   def index(conn, _params) do
     checklists = Checklists.list_checklists(conn.assigns.current_user)
     render(conn, :index, checklists: checklists)
-  end
-
-  def new(conn, _params) do
-    changeset = Checklists.change_checklist(%Checklist{})
-    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"checklist" => checklist_params}) do

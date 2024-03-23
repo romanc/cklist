@@ -74,10 +74,11 @@ defmodule CklistWeb.Router do
       live "/user/settings", UserSettingsLive, :edit
       live "/user/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
+      live "/checklists/new", CklistNewLive
       live "/checklists/:id/run", CklistRunLive
     end
 
-    resources "/checklists", ChecklistController, except: [:index]
+    resources "/checklists", ChecklistController, except: [:index, :new]
   end
 
   scope "/", CklistWeb do
