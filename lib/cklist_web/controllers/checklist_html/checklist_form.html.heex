@@ -5,7 +5,16 @@
   <.input field={f[:title]} type="text" label="Title" />
   <.input field={f[:description]} type="text" label="Description" />
   <.input field={f[:access]} type="select" options={[Personal: "personal", Public: "public"]} label="Access" />
-  <.input field={f[:sequential]} type="select" options={[True: true, False: false]} label="Sequential" />
+  <.input name="sequential" value={f[:document].value.sequential} type="select" options={[True: true, False: false]} label="Sequential" />
+
+  <label class="block text-sm font-semibold leading-6 text-zinc-800" data-phx-id="phx-F7-5FbEI0JWuhCsE-19">
+    Steps
+  </label>
+  <%= for {step, index} <- Enum.with_index(f[:document].value.steps) do %>
+    <.input name={"step-#{index}"} type="text" value={step.name} phx-change="step_changed" />
+  <% end %>
+  <.input name="new_step" type="text" value="" phx-change="new_step" placeholder="Add new step" />
+
   <:actions>
     <.button>Save Checklist</.button>
   </:actions>
