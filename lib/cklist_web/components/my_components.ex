@@ -72,6 +72,21 @@ defmodule CklistWeb.MyComponents do
   attr :class, :string, default: nil
   attr :rest, :global, doc: "arbitrary HTML attributes to apply to the button tag"
   slot :inner_block, required: true
+  def my_button(assigns) do
+    ~H"""
+    <.button
+      type="button"
+      class={"px-2 #{@class}"}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </.button>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :rest, :global, doc: "arbitrary HTML attributes to apply to the button tag"
+  slot :inner_block, required: true
   defp button(assigns) do
     ~H"""
     <button class={"py-2 rounded-lg #{@class}"} {@rest}>

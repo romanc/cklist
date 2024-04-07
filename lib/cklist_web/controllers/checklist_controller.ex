@@ -8,14 +8,22 @@ defmodule CklistWeb.ChecklistController do
     render(conn, :index, checklists: checklists)
   end
 
-  def create(conn, %{"checklist" => checklist_params}) do
-    data = %{}
-    |> Map.put("sequential", Map.get(checklist_params, "sequential"))
-    |> Map.put("steps", Map.get(checklist_params, "steps", []))
+  def create(conn, params) do
+    IO.inspect(params)
+    checklist_params = params["checklist"]
+    IO.inspect(checklist_params)
+    steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
+
+    document = %{
+      sequential: Map.get(params, "sequential", true),
+      steps: Enum.map(Map.values(steps), fn val -> %{name: val} end)
+    }
 
     checklist_params = checklist_params
     |> Map.put("user_id", conn.assigns.current_user.id)
-    |> Map.put("document", data)
+    |> Map.put("document", document)
+
+    IO.inspect(checklist_params)
 
     case Checklists.create_checklist(checklist_params) do
       {:ok, checklist} ->

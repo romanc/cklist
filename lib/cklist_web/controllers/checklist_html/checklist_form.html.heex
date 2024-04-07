@@ -1,4 +1,4 @@
-<.simple_form :let={f} for={@changeset} action={@action}>
+<.simple_form :let={f} for={@changeset} phx-submit="save_checklist">
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
@@ -13,7 +13,9 @@
   <%= for {step, index} <- Enum.with_index(f[:document].value.steps) do %>
     <.input name={"step-#{index}"} type="text" value={step.name} phx-change="step_changed" />
   <% end %>
-  <.input name="new_step" type="text" value="" phx-change="new_step" placeholder="Add new step" />
+
+  <.my_button phx-click="step_add" class="bg-lime-500 hover:bg-lime-400">Add step</.my_button>
+  <.my_button phx-click="step_remove" class="bg-red-500 hover:bg-red-600">Remove step</.my_button>
 
   <:actions>
     <.button>Save Checklist</.button>
