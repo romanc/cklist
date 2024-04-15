@@ -3,21 +3,21 @@ defmodule Cklist.Checklists.Checklist do
   import Ecto.Changeset
 
   schema "checklists" do
-    field :description, :string
     field :title, :string
-    field :document, :map
+    field :description, :string
     field :access, Ecto.Enum, values: [:public, :personal]
+    field :document, :map
+
+    timestamps(type: :utc_datetime)
 
     belongs_to :user, Cklist.Accounts.User
     has_many :runs, Cklist.Checklists.Run
-
-    timestamps(type: :utc_datetime)
   end
 
   @doc false
   def changeset(checklist, attrs) do
     checklist
-    |> cast(attrs, [:title, :description, :document, :user_id, :access])
-    |> validate_required([:title, :description, :document, :user_id, :access])
+    |> cast(attrs, [:title, :description, :access, :document, :user_id])
+    |> validate_required([:title, :description, :access, :document, :user_id])
   end
 end

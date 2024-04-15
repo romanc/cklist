@@ -10,52 +10,87 @@ defmodule CklistWeb.CklistNewLive do
 
   def mount(_params, _session, socket) do
     changeset = Checklists.change_checklist(
-      %Checklist{},
-      %{ document: %{ sequential: true, steps: [%{name: "one"}, %{name: "two"}] } }
+      %Checklist{
+        access: :personal,
+        document: %{
+          version: "0.1",
+          sequential: true,
+          steps: [%{ name: "one" }, %{ name: "two" }]
+        },
+        user_id: socket.assigns.current_user.id,
+      }
     )
-
-    IO.inspect(changeset)
 
     socket = socket
       |> assign(:changeset, changeset)
     {:ok, socket}
   end
 
-  def handle_event("step_changed", _params, socket) do
-    IO.inspect("Step changed")
+  def handle_event("form_changed", params, socket) do
+    IO.inspect("Form changed")
+
+    #IO.inspect(socket.assigns.changeset)
+    #IO.inspect(params)
+
+    new_checklist = checklist_from(params, socket)
+
+    changeset = Checklists.change_checklist(
+      socket.assigns.changeset.data,
+      Map.merge(
+        socket.assigns.changeset.changes,
+        Map.put(new_checklist, :document, document_from(params, socket))
+      )
+    )
+
+    #IO.inspect(changeset)
+
+    socket = socket
+      |> assign(:changeset, changeset)
+
     { :noreply, socket }
   end
 
   def handle_event("step_add", _params, socket) do
     IO.inspect("Adding new step")
-    document = socket.assigns.changeset.changes.document
+    document = latest_document(socket)
 
     changeset = Checklists.change_checklist(
       socket.assigns.changeset.data,
-      %{ document: %{
-        steps: document.steps ++ [%{name: "New step"}],
-        sequential: document.sequential
-      }}
+      Map.merge(
+        socket.assigns.changeset.changes,
+        %{ document: %{
+          sequential: document.sequential,
+          steps: document.steps ++ [%{name: "New step"}],
+          version: document.version,
+        }}
+      )
     )
 
+    IO.inspect(changeset)
+
     socket = socket
-        |> assign(:changeset, changeset)
+      |> assign(:changeset, changeset)
 
     { :noreply, socket }
   end
 
   def handle_event("step_remove", _params, socket) do
     IO.inspect("Removing one step")
-
-    document = socket.assigns.changeset.changes.document
+    document = latest_document(socket)
 
     changeset = Checklists.change_checklist(
       socket.assigns.changeset.data,
-      %{ document: %{
-        steps: List.delete_at(document.steps, length(document.steps)-1),
-        sequential: document.sequential
-      }}
+      Map.merge(
+        socket.assigns.changeset.changes,
+        %{ document: %{
+          sequential: document.sequential,
+          steps: List.delete_at(document.steps, length(document.steps) - 1),
+          version: document.version,
+        }}
+      )
     )
+
+    IO.inspect(changeset)
 
     socket = socket
         |> assign(:changeset, changeset)
@@ -63,30 +98,46 @@ defmodule CklistWeb.CklistNewLive do
     { :noreply, socket }
   end
 
-  def handle_event("save_checklist", params, socket) do
+  def handle_event("save_checklist", _params, socket) do
     IO.inspect("saving checklist")
 
-    checklist_params = params["checklist"]
-    steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
+    # checklist_params = params["checklist"]
+    # |> Map.put("document", document_from(params, socket))
 
-    document = %{
-      sequential: Map.get(params, "sequential", true),
-      steps: Enum.map(Map.values(steps), fn val -> %{name: val} end)
-    }
+    changeset = socket.assigns.changeset
 
-    checklist_params = checklist_params
-    |> Map.put("user_id", socket.assigns.current_user.id)
-    |> Map.put("document", document)
-
-    case Checklists.create_checklist(checklist_params) do
+    case changeset.valid? && Checklists.insert_checklist(changeset) do
       {:ok, checklist} ->
         {:noreply, socket
         |> put_flash(:info, "Checklist created successfully.")
         |> redirect(to: ~p"/checklists/#{checklist}")}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      false ->
         {:noreply, socket
         |> assign(:changeset, changeset)}
     end
+  end
+
+  defp checklist_from(params, _socket) do
+    %{
+      title: params["checklist"]["title"],
+      description: params["checklist"]["description"],
+      access: (if params["checklist"]["access"] === "personal", do: :personal, else: :public)
+    }
+  end
+
+  defp document_from(params, socket) do
+    document = latest_document(socket)
+    steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
+
+    %{
+      sequential: Map.get(params, "sequential", document.sequential),
+      steps: Enum.map(Map.values(steps), fn val -> %{name: val} end),
+      version: document.version,
+    }
+  end
+
+  defp latest_document(socket) do
+    Map.get(socket.assigns.changeset.changes, :document, socket.assigns.changeset.data.document)
   end
 end

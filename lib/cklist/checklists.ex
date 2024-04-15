@@ -63,6 +63,13 @@ defmodule Cklist.Checklists do
   end
 
   @doc """
+  Inserts a checklist
+  """
+  def insert_checklist(changeset) do
+    Repo.insert(changeset)
+  end
+
+  @doc """
   Updates a checklist.
 
   ## Examples
