@@ -30,7 +30,7 @@ defmodule CklistWeb.CklistNewLive do
     IO.inspect("Adding new step")
     document = socket.assigns.changeset.changes.document
 
-    {_, changeset} = Checklists.update_checklist(
+    changeset = Checklists.change_checklist(
       socket.assigns.changeset.data,
       %{ document: %{
         steps: document.steps ++ [%{name: "New step"}],
@@ -48,12 +48,11 @@ defmodule CklistWeb.CklistNewLive do
     IO.inspect("Removing one step")
 
     document = socket.assigns.changeset.changes.document
-    new_steps = List.delete_at(document.steps, length(document.steps)-1)
 
-    {_, changeset} = Checklists.update_checklist(
+    changeset = Checklists.change_checklist(
       socket.assigns.changeset.data,
       %{ document: %{
-        steps: new_steps,
+        steps: List.delete_at(document.steps, length(document.steps)-1),
         sequential: document.sequential
       }}
     )
@@ -67,9 +66,7 @@ defmodule CklistWeb.CklistNewLive do
   def handle_event("save_checklist", params, socket) do
     IO.inspect("saving checklist")
 
-    IO.inspect(params)
     checklist_params = params["checklist"]
-    IO.inspect(checklist_params)
     steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
 
     document = %{
@@ -80,8 +77,6 @@ defmodule CklistWeb.CklistNewLive do
     checklist_params = checklist_params
     |> Map.put("user_id", socket.assigns.current_user.id)
     |> Map.put("document", document)
-
-    IO.inspect(checklist_params)
 
     case Checklists.create_checklist(checklist_params) do
       {:ok, checklist} ->
