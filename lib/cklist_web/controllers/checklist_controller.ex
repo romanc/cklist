@@ -41,12 +41,6 @@ defmodule CklistWeb.ChecklistController do
     render(conn, :show, checklist: checklist)
   end
 
-  def edit(conn, %{"id" => id}) do
-    checklist = Checklists.get_checklist!(id)
-    changeset = Checklists.change_checklist(checklist)
-    render(conn, :edit, checklist: checklist, changeset: changeset)
-  end
-
   def update(conn, %{"id" => id, "checklist" => checklist_params}) do
     checklist = Checklists.get_checklist!(id)
 

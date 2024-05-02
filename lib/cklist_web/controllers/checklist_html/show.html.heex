@@ -9,13 +9,6 @@
         <img src={~p"/images/play.svg"} alt="Run this checklist" title="Run this checklist" width="16" height="16" class="inline invert" />
       </.button>
     </.link>
-    <.link href={~p"/checklists/#{@checklist}/edit"}>
-      <.button>
-        Edit
-        &nbsp;
-        <img src={~p"/images/edit.svg"} alt="Run this checklist" title="Run this checklist" width="16" height="16" class="inline invert" />
-      </.button>
-    </.link>
   </:actions>
 </.header>
 
@@ -31,6 +24,7 @@
       <% end %>
     </ul>
   </:item>
+  <:item title="Document version"><%= @checklist.document["version"] %></:item>
 </.list>
 
 <.back navigate={~p"/checklists"}>Back to checklists</.back>
