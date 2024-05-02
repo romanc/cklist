@@ -27,11 +27,6 @@ defmodule CklistWeb.CklistNewLive do
   end
 
   def handle_event("form_changed", params, socket) do
-    IO.inspect("Form changed")
-
-    #IO.inspect(socket.assigns.changeset)
-    #IO.inspect(params)
-
     new_checklist = checklist_from(params, socket)
 
     changeset = Checklists.change_checklist(
@@ -42,8 +37,6 @@ defmodule CklistWeb.CklistNewLive do
       )
     )
 
-    #IO.inspect(changeset)
-
     socket = socket
       |> assign(:changeset, changeset)
 
@@ -51,7 +44,6 @@ defmodule CklistWeb.CklistNewLive do
   end
 
   def handle_event("step_add", _params, socket) do
-    IO.inspect("Adding new step")
     document = latest_document(socket)
 
     changeset = Checklists.change_checklist(
@@ -66,8 +58,6 @@ defmodule CklistWeb.CklistNewLive do
       )
     )
 
-    IO.inspect(changeset)
-
     socket = socket
       |> assign(:changeset, changeset)
 
@@ -75,7 +65,6 @@ defmodule CklistWeb.CklistNewLive do
   end
 
   def handle_event("step_remove", _params, socket) do
-    IO.inspect("Removing one step")
     document = latest_document(socket)
 
     changeset = Checklists.change_checklist(
@@ -90,8 +79,6 @@ defmodule CklistWeb.CklistNewLive do
       )
     )
 
-    IO.inspect(changeset)
-
     socket = socket
         |> assign(:changeset, changeset)
 
@@ -99,11 +86,6 @@ defmodule CklistWeb.CklistNewLive do
   end
 
   def handle_event("save_checklist", _params, socket) do
-    IO.inspect("saving checklist")
-
-    # checklist_params = params["checklist"]
-    # |> Map.put("document", document_from(params, socket))
-
     changeset = socket.assigns.changeset
 
     case changeset.valid? && Checklists.insert_checklist(changeset) do
@@ -131,7 +113,7 @@ defmodule CklistWeb.CklistNewLive do
     steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
 
     %{
-      sequential: Map.get(params, "sequential", document.sequential),
+      sequential: (if Map.get(params, "sequential", document.sequential) == "true", do: true, else: false),
       steps: Enum.map(Map.values(steps), fn val -> %{name: val} end),
       version: document.version,
     }
