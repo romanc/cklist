@@ -4,7 +4,7 @@ defmodule Cklist.Checklists.Run do
 
   schema "runs" do
     belongs_to :checklist, Cklist.Checklists.Checklist
-    has_many :activities, Cklist.Checklists.Activity
+    has_many :activities, Cklist.Checklists.Activity, on_delete: :delete_all
   end
 
     @doc false

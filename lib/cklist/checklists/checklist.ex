@@ -11,7 +11,7 @@ defmodule Cklist.Checklists.Checklist do
     timestamps(type: :utc_datetime)
 
     belongs_to :user, Cklist.Accounts.User
-    has_many :runs, Cklist.Checklists.Run
+    has_many :runs, Cklist.Checklists.Run, on_delete: :delete_all
   end
 
   @doc false
