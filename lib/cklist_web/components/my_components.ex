@@ -24,6 +24,31 @@ defmodule CklistWeb.MyComponents do
   end
 
   @doc """
+  Renders one step of a sequential checklist as a card.
+  """
+  def card(assigns) do
+    ~H"""
+    <div class="shadow-md p-4">
+        <p class="text-lg"><%= render_slot(@inner_block) %></p>
+        <div class={"flex flex-row justify-end"}>
+          <.next_button class="basis-1/3">Done</.next_button>
+        </div>
+      </div>
+    """
+  end
+
+  @doc """
+  Renders a preview of one step of the next step of a sequential checklist
+  """
+  def preview_card(assigns) do
+    ~H"""
+    <div class="shadow-md p-4">
+      <p class="text-sm"><%= render_slot(@inner_block) %></p>
+    </div>
+    """
+  end
+
+  @doc """
   Renders an abort button.
 
   ## Example
@@ -89,7 +114,7 @@ defmodule CklistWeb.MyComponents do
   slot :inner_block, required: true
   defp button(assigns) do
     ~H"""
-    <button class={"py-2 rounded-lg #{@class}"} {@rest}>
+    <button class={"py-2 rounded-full #{@class}"} {@rest}>
       <%= render_slot(@inner_block) %>
     </button>
     """
