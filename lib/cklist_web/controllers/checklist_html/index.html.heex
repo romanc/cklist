@@ -15,12 +15,12 @@
       <.link navigate={~p"/checklists/#{checklist}"}>Show</.link>
     </div>
     <.link navigate={~p"/checklists/#{checklist}/run"}>
-      <img src={~p"/images/play.svg"} alt="Run this checklist" title="Run this checklist" width="16" height="16" class="inline" />
+      <.icon name="hero-play" />
     </.link>
   </:action>
   <:action :let={checklist}>
-    <.link href={~p"/checklists/#{checklist}"} method="delete" data-confirm="Are you sure?">
-      <img src={~p"/images/delete.svg"} alt="Delete this checklist" title="Delete this checklist" width="16" height="16" class="inline" />
+    <.link href={~p"/checklists/#{checklist}"} method="delete" data-confirm="Are you sure you want to delete this checklist?">
+      <.icon name="hero-trash" />
     </.link>
   </:action>
 </.table>
