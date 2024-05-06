@@ -14,8 +14,8 @@
     <.input name={"step-#{index}"} type="text" value={step.name} />
   <% end %>
 
-  <.my_button phx-click="step_add" class="bg-lime-500 hover:bg-lime-400">Add step</.my_button>
-  <.my_button phx-click="step_remove" class="bg-red-500 hover:bg-red-600">Remove step</.my_button>
+  <.my_button phx-click="step_add">Add step</.my_button>
+  <.my_button phx-click="step_remove">Remove step</.my_button>
 
   <:actions>
     <.button>Save Checklist</.button>

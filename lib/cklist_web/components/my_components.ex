@@ -61,9 +61,9 @@ defmodule CklistWeb.MyComponents do
   def abort_button(assigns) do
     ~H"""
     <.button
-      class={"bg-gray-300 hover:bg-gray-400 #{if @hidden, do: "hidden", else: ""} #{@class}"}
+      class={"#{if @hidden, do: "hidden", else: ""} #{@class}"}
       phx-click="abort"
-      data-confirm="Are you sure?"
+      data-confirm="Are you sure you want to abort this checklist?"
     >
       Abort
     </.button>
@@ -86,7 +86,7 @@ defmodule CklistWeb.MyComponents do
   def next_button(assigns) do
     ~H"""
     <.button
-      class={"bg-lime-500 hover:bg-lime-400 #{if @hidden, do: "hidden", else: ""} #{@class}"}
+      class={"#{if @hidden, do: "hidden", else: ""} #{@class}"}
       phx-click="next_step"
     >
       <%= render_slot(@inner_block) %>
@@ -114,7 +114,7 @@ defmodule CklistWeb.MyComponents do
   slot :inner_block, required: true
   defp button(assigns) do
     ~H"""
-    <button class={"py-2 rounded-full #{@class}"} {@rest}>
+    <button class={"rounded-lg py-2 border-2 hover:border-slate-400 #{@class}"} {@rest}>
       <%= render_slot(@inner_block) %>
     </button>
     """
