@@ -96,6 +96,7 @@ defmodule CklistWeb.CklistNewLive do
 
       false ->
         {:noreply, socket
+        |> put_flash(:error, "Checklist creation failed.")
         |> assign(:changeset, changeset)}
     end
   end
