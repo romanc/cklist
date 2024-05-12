@@ -13,8 +13,6 @@ defmodule CklistWeb.CklistRunLive do
     checklist = Checklists.get_checklist!(id)
     run = Checklists.log_run_start(checklist, user)
 
-    IO.inspect(checklist)
-
     socket = socket
       |> assign(:checklist, checklist)
       |> assign(:run, run)

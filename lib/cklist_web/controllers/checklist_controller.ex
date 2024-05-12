@@ -9,9 +9,7 @@ defmodule CklistWeb.ChecklistController do
   end
 
   def create(conn, params) do
-    IO.inspect(params)
     checklist_params = params["checklist"]
-    IO.inspect(checklist_params)
     steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
 
     document = %{
@@ -20,10 +18,8 @@ defmodule CklistWeb.ChecklistController do
     }
 
     checklist_params = checklist_params
-    |> Map.put("user_id", conn.assigns.current_user.id)
-    |> Map.put("document", document)
-
-    IO.inspect(checklist_params)
+      |> Map.put("user_id", conn.assigns.current_user.id)
+      |> Map.put("document", document)
 
     case Checklists.create_checklist(checklist_params) do
       {:ok, checklist} ->

@@ -4,6 +4,7 @@ defmodule CklistWeb.MyComponents do
   """
 
   use Phoenix.Component
+  import CklistWeb.CoreComponents
 
   @doc """
   Renders a progress bar.
@@ -23,15 +24,80 @@ defmodule CklistWeb.MyComponents do
     """
   end
 
+  def sequential_run(assigns) do
+    ~H"""
+    <div :if={@checklist.document["sequential"]}>
+      <div class="mt-4" >
+        <%= if @completed do %>
+          <p>Look at all the things you did:</p>
+          <ul class="mt-2 list-disc list-inside">
+            <%= for step <- @checklist.document["steps"] do %>
+              <li><%= step["name"] %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <.card>
+            <%= @current_step["name"] %>
+          </.card>
+          <%= if @next_step do %>
+            <.preview_card>
+              <%= @next_step["name"] %>
+            </.preview_card>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class={"flex flex-row my-8 #{if @completed, do: "justify-end", else: "justify-between"}"}>
+        <.abort_button class="basis-1/3" hidden={@completed} />
+
+        <.next_button class="basis-1/3" :if={@completed}>
+          <%= if @completed, do: "Awesome!" %>
+        </.next_button>
+      </div>
+    </div>
+    """
+  end
+
+  def checklist_run(assigns) do
+    ~H"""
+    <div :if={not @checklist.document["sequential"]}>
+      <form id="checklist_run_form">
+        <.input
+          :for={step <- @checklist.document["steps"]}
+          phx-change="step_done"
+          checked={Map.get(@step_state, step["name"], false)}
+          id={step["name"]}
+          type="checkbox" label={step["name"]}
+          name={step["name"]}
+          disabled={@completed}
+        />
+      </form>
+
+      <div class={"mt-4 #{if @completed, do: "", else: "hidden"}"}>
+        <p class="text-xl">Congratulations! 🎉</p>
+        <p class="text-zinc-600 text-medium mt-1">You finished the checklist.</p>
+      </div>
+
+      <div class={"flex flex-row my-8 #{if @completed, do: "justify-end", else: "justify-between"}"}>
+        <.abort_button class="basis-1/3" hidden={@completed} />
+
+        <.next_button class="basis-1/3" hidden={not @completed}>
+          Awesome!
+        </.next_button>
+      </div>
+    </div>
+    """
+  end
+
   @doc """
   Renders one step of a sequential checklist as a card.
   """
   def card(assigns) do
     ~H"""
-    <div class="shadow-md p-4">
+    <div class="shadow-md p-4" id="checklist_card">
         <p class="text-lg"><%= render_slot(@inner_block) %></p>
         <div class={"flex flex-row justify-end"}>
-          <.next_button class="basis-1/3">Done</.next_button>
+          <.next_button class="basis-1/3" />
         </div>
       </div>
     """
@@ -42,7 +108,7 @@ defmodule CklistWeb.MyComponents do
   """
   def preview_card(assigns) do
     ~H"""
-    <div class="shadow-md p-4">
+    <div class="shadow-md p-4" id="checklist_preview-card">
       <p class="text-sm"><%= render_slot(@inner_block) %></p>
     </div>
     """
@@ -81,7 +147,7 @@ defmodule CklistWeb.MyComponents do
   """
   attr :class, :string, default: nil
   attr :hidden, :boolean, default: false
-  slot :inner_block, default: "Next"
+  slot :inner_block, required: false
 
   def next_button(assigns) do
     ~H"""
@@ -89,30 +155,30 @@ defmodule CklistWeb.MyComponents do
       class={"#{if @hidden, do: "hidden", else: ""} #{@class}"}
       phx-click="next_step"
     >
-      <%= render_slot(@inner_block) %>
+      <%= render_slot(@inner_block) || "Next" %>
     </.button>
     """
   end
 
   attr :class, :string, default: nil
-  attr :rest, :global, doc: "arbitrary HTML attributes to apply to the button tag"
+  attr :rest, :global, doc: "Arbitrary HTML attributes to apply to the button tag"
   slot :inner_block, required: true
   def my_button(assigns) do
     ~H"""
-    <.button
+    <.core_button
       type="button"
       class={"px-2 #{@class}"}
       {@rest}
     >
       <%= render_slot(@inner_block) %>
-    </.button>
+    </.core_button>
     """
   end
 
   attr :class, :string, default: nil
-  attr :rest, :global, doc: "arbitrary HTML attributes to apply to the button tag"
+  attr :rest, :global, doc: "Arbitrary HTML attributes to apply to the button tag"
   slot :inner_block, required: true
-  defp button(assigns) do
+  defp core_button(assigns) do
     ~H"""
     <button class={"rounded-lg py-2 border-2 hover:border-slate-400 #{@class}"} {@rest}>
       <%= render_slot(@inner_block) %>

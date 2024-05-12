@@ -5,60 +5,6 @@
 
 <.progress_bar steps={@steps} done={@steps_done} />
 
-<div :if={not @checklist.document["sequential"]}>
-  <form id="checklist_run_form">
-    <.input
-      :for={step <- @checklist.document["steps"]}
-      phx-change="step_done"
-      checked={Map.get(@step_state, step["name"], false)}
-      id={step["name"]}
-      type="checkbox" label={step["name"]}
-      name={step["name"]}
-      disabled={@completed}
-    />
-  </form>
-
-  <div class={"mt-4 #{if @completed, do: "", else: "hidden"}"}>
-    <p class="text-xl">Congratulations! 🎉</p>
-    <p class="text-zinc-600 text-medium mt-1">You finished the checklist.</p>
-  </div>
-
-  <div class={"flex flex-row my-8 #{if @completed, do: "justify-end", else: "justify-between"}"}>
-    <.abort_button class="basis-1/3" hidden={@completed} />
-
-    <.next_button class="basis-1/3" hidden={not @completed}>
-      Awesome!
-    </.next_button>
-  </div>
-</div>
-
-<div :if={@checklist.document["sequential"]}>
-  <div class="mt-4" >
-    <%= if @completed do %>
-      <p>Look at all the things you did:</p>
-      <ul class="mt-2 list-disc list-inside">
-        <%= for step <- @checklist.document["steps"] do %>
-          <li><%= step["name"] %></li>
-        <% end %>
-      </ul>
-    <% else %>
-      <.card>
-        <%= @current_step["name"] %>
-      </.card>
-      <%= if @next_step do %>
-        <.preview_card>
-          <%= @next_step["name"] %>
-        </.preview_card>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class={"flex flex-row my-8 #{if @completed, do: "justify-end", else: "justify-between"}"}>
-    <.abort_button class="basis-1/3" hidden={@completed} />
-
-    <.next_button class="basis-1/3" :if={@completed}>
-      <%= if @completed, do: "Awesome!", else: "Done" %>
-    </.next_button>
-  </div>
-</div>
+<.checklist_run checklist={@checklist} step_state={@step_state} completed={@completed} />
+<.sequential_run checklist={@checklist} current_step={@current_step} next_step={@next_step} completed={@completed} />
  
