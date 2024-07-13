@@ -11,7 +11,10 @@
     Steps
   </label>
   <%= for {step, index} <- Enum.with_index(f[:document].value.steps) do %>
-    <.input name={"step-#{index}"} type="text" value={step.name} />
+    <fieldset>
+      <.input name={"step-#{index}"} type="text" value={step.name} />
+      <.input name={"desc-#{index}"} type="text" value={step.description} />
+    </fieldset>
   <% end %>
 
   <.my_button phx-click="step_add">Add step</.my_button>

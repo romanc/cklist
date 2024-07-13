@@ -36,13 +36,9 @@ defmodule CklistWeb.MyComponents do
             <% end %>
           </ul>
         <% else %>
-          <.card>
-            <%= @current_step["name"] %>
-          </.card>
+          <.card title={@current_step["name"]} description={Map.get(@current_step, "description", "")} />
           <%= if @next_step do %>
-            <.preview_card>
-              <%= @next_step["name"] %>
-            </.preview_card>
+            <.preview_card title={@next_step["name"]} />
           <% end %>
         <% end %>
       </div>
@@ -67,7 +63,7 @@ defmodule CklistWeb.MyComponents do
           phx-change="step_done"
           checked={Map.get(@step_state, step["name"], false)}
           id={step["name"]}
-          type="checkbox" label={step["name"]}
+          type="checkbox" label={"#{step["name"]}: #{Map.get(step, "description", "")}"}
           name={step["name"]}
           disabled={@completed}
         />
@@ -91,11 +87,20 @@ defmodule CklistWeb.MyComponents do
 
   @doc """
   Renders one step of a sequential checklist as a card.
+
+  ## Example
+
+    <.card title="My card" description="Lorem ipsum dolor sit amet..." />
   """
+  attr :title, :string, required: true
+  attr :description, :string, required: false
   def card(assigns) do
     ~H"""
     <div class="shadow-md p-4" id="checklist_card">
-        <p class="text-lg"><%= render_slot(@inner_block) %></p>
+        <p class="text-lg"><%= @title %></p>
+        <%= if @description do %>
+          <p><%= @description %></p>
+        <% end %>
         <div class={"flex flex-row justify-end"}>
           <.next_button class="basis-1/3" />
         </div>
@@ -105,11 +110,15 @@ defmodule CklistWeb.MyComponents do
 
   @doc """
   Renders a preview of one step of the next step of a sequential checklist
+
+  ## Example
+
+    <.preview_card title="My preview card" />
   """
   def preview_card(assigns) do
     ~H"""
     <div class="shadow-md p-4" id="checklist_preview-card">
-      <p class="text-sm"><%= render_slot(@inner_block) %></p>
+      <p class="text-sm"><%= @title %></p>
     </div>
     """
   end

@@ -11,10 +11,15 @@ defmodule CklistWeb.ChecklistController do
   def create(conn, params) do
     checklist_params = params["checklist"]
     steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
+    descriptions = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "desc-") end)
+      |> Enum.map(fn {key, val} -> {String.replace(key, "desc", "step"), val} end )
+      |> Map.new()
+    steps = Map.merge(steps, descriptions, fn _key, name, desc -> %{name: name, description: desc} end)
+      |> Map.values()
 
     document = %{
       sequential: Map.get(params, "sequential", true),
-      steps: Enum.map(Map.values(steps), fn val -> %{name: val} end)
+      steps: steps
     }
 
     checklist_params = checklist_params

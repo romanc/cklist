@@ -15,7 +15,10 @@ defmodule CklistWeb.CklistNewLive do
         document: %{
           version: "0.1",
           sequential: true,
-          steps: [%{ name: "one" }, %{ name: "two" }]
+          steps: [
+            %{ name: "Step one", description: "Lorem ipsum" },
+            %{ name: "Step two", description: "dolor sit amet" }
+          ]
         },
         user_id: socket.assigns.current_user.id,
       }
@@ -52,7 +55,7 @@ defmodule CklistWeb.CklistNewLive do
         socket.assigns.changeset.changes,
         %{ document: %{
           sequential: document.sequential,
-          steps: document.steps ++ [%{name: "New step"}],
+          steps: document.steps ++ [%{name: "New step", description: "with description"}],
           version: document.version,
         }}
       )
@@ -112,10 +115,15 @@ defmodule CklistWeb.CklistNewLive do
   defp document_from(params, socket) do
     document = latest_document(socket)
     steps = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "step-") end)
+    descriptions = Map.filter(params, fn {key, _val} -> String.starts_with?(key, "desc-") end)
+      |> Enum.map(fn {key, val} -> {String.replace(key, "desc", "step"), val} end )
+      |> Map.new()
+    steps = Map.merge(steps, descriptions, fn _key, name, desc -> %{name: name, description: desc} end)
+      |> Map.values()
 
     %{
       sequential: (if Map.get(params, "sequential", document.sequential) == "true", do: true, else: false),
-      steps: Enum.map(Map.values(steps), fn val -> %{name: val} end),
+      steps: steps,
       version: document.version,
     }
   end

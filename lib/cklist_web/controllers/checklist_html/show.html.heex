@@ -18,11 +18,14 @@
   <:item title="Access"><%= @checklist.access %></:item>
   <:item title="Sequential"><%= @checklist.document["sequential"] %></:item>
   <:item title="Steps">
-    <ul class="list-disc list-inside">
+    <dl>
       <%= for step <- @checklist.document["steps"] do %>
-        <li><%= step["name"] %></li>
+        <dt class="font-medium"><%= step["name"] %></dt>
+        <%= if step["description"] do %>
+          <dd class="indent-1"><%= step["description"] %></dd>
+        <% end %>
       <% end %>
-    </ul>
+    </dl>
   </:item>
   <:item title="Document version"><%= @checklist.document["version"] %></:item>
 </.list>
