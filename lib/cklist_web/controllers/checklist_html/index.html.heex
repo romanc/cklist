@@ -1,0 +1,32 @@
+<.header>
+  Listing Checklists
+  <:actions>
+    <%= if @current_user do %>
+    <.link href={~p"/checklists/new"}>
+      <.button>New Checklist</.button>
+    </.link>
+    <% end %>
+  </:actions>
+</.header>
+
+<.table id="checklists" rows={@checklists} row_click={if @current_user, do: &JS.navigate(~p"/checklists/#{&1}")}>
+  <:col :let={checklist} label="Title"><%= checklist.title %></:col>
+  <:col :let={checklist} label="Description"><%= checklist.description %></:col>
+  <:action :let={checklist}>
+    <%= if @current_user do %>
+      <div class="sr-only">
+        <.link navigate={~p"/checklists/#{checklist}"}>Show</.link>
+      </div>
+      <.link navigate={~p"/checklists/#{checklist}/run"}>
+        <.icon name="hero-play" />
+      </.link>
+    <% end %>
+  </:action>
+  <:action :let={checklist}>
+    <%= if @current_user do %>
+      <.link href={~p"/checklists/#{checklist}"} method="delete" data-confirm="Are you sure you want to delete this checklist?">
+        <.icon name="hero-trash" />
+      </.link>
+    <% end %>
+  </:action>
+</.table>

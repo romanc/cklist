@@ -1,0 +1,26 @@
+<.simple_form :let={f} for={@changeset} phx-change="form_changed" phx-submit="save_checklist">
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:title]} type="text" label="Title" />
+  <.input field={f[:description]} type="text" label="Description" />
+  <.input field={f[:access]} type="select" options={[Personal: "personal", Public: "public"]} label="Access" />
+  <.input name="sequential" value={f[:document].value.sequential} type="select" options={[True: true, False: false]} label="Sequential" />
+
+  <label class="block text-sm font-semibold leading-6 text-zinc-800" data-phx-id="phx-F7-5FbEI0JWuhCsE-19">
+    Steps
+  </label>
+  <%= for {step, index} <- Enum.with_index(f[:document].value.steps) do %>
+    <fieldset>
+      <.input name={"step-#{index}"} type="text" value={step.name} />
+      <.input name={"desc-#{index}"} type="text" value={step.description} />
+    </fieldset>
+  <% end %>
+
+  <.my_button phx-click="step_add">Add step</.my_button>
+  <.my_button phx-click="step_remove">Remove step</.my_button>
+
+  <:actions>
+    <.button>Save Checklist</.button>
+  </:actions>
+</.simple_form>
