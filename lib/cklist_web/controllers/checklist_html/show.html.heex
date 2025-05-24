@@ -1,0 +1,33 @@
+<.header>
+  Checklist <%= @checklist.id %>
+  <:subtitle>This is a checklist record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/checklists/#{@checklist}/run"}>
+      <.button>
+        Run
+        &nbsp;
+        <.icon name="hero-play" class="my-0.5" />
+      </.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @checklist.title %></:item>
+  <:item title="Description"><%= @checklist.description %></:item>
+  <:item title="Access"><%= @checklist.access %></:item>
+  <:item title="Sequential"><%= @checklist.document["sequential"] %></:item>
+  <:item title="Steps">
+    <dl>
+      <%= for step <- @checklist.document["steps"] do %>
+        <dt class="font-medium"><%= step["name"] %></dt>
+        <%= if step["description"] do %>
+          <dd class="indent-1"><%= step["description"] %></dd>
+        <% end %>
+      <% end %>
+    </dl>
+  </:item>
+  <:item title="Document version"><%= @checklist.document["version"] %></:item>
+</.list>
+
+<.back navigate={~p"/checklists"}>Back to checklists</.back>
