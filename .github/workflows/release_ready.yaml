@@ -1,0 +1,35 @@
+name: Release ready
+
+on:
+  pull_request:
+
+jobs:
+  version-number:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Is `mix.exs` in changed files?
+        run: |
+          git diff --name-only HEAD^1 HEAD | grep "^mix.exs$"
+
+      - name: Was version number changed?
+        run: |
+          git diff HEAD^1 HEAD mix.exs | grep -E "^\+\s+version: "
+
+  prod-compile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
+      - name: Install prod dependencies
+        run: mix deps.get --only prod
+
+      - name: Compile in prod mode
+        run: MIX_ENV=prod mix compile
