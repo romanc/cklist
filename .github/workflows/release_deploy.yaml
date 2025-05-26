@@ -56,3 +56,10 @@ jobs:
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_port: ${{ secrets.DEPLOY_PORT }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Activate new release
+        run: |
+          # Start the SSH agent and load key.
+          source agent-start "$GITHUB_ACTION"
+          echo "$DEPLOY_KEY" | SSH_PASS="" agent-add
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH_RELEASES }}; rm current; ln -s cklist-${{ steps.info.outputs.version }}-${{ steps.info.outputs.git-hash }}/ current; ${{ secrets.DEPLOY_RESTART_SERVER }}"
