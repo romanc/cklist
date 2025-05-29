@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-# un-comment the following line to debug deployments (on pull requests)
-#  pull_request:
+  pull_request:  # un-comment to debug deployments
 
 jobs:
   deploy:
