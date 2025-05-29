@@ -1,10 +1,23 @@
 import Config
 
+# Configure your database
+#
+# The MIX_TEST_PARTITION environment variable can be used
+# to provide built-in test partitioning in CI environment.
+# Run `mix help test` for more information.
+config :cklist, Cklist.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "cklist_test#{System.get_env("MIX_TEST_PARTITION")}",
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: System.schedulers_online() * 2
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :cklist, CklistWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "KJbEQFOedbuWQbOAwq+7bnLDegOwV6f5WUkDveYqiMDOi0bC7J03xL73ZAbvVoUR",
+  secret_key_base: "Uf6JrV/fDGYwI5G+cypaVPb7dzFK8+0LiXJfz+Wd7dghDk+PPMf3hg8oWziSqEUf",
   server: false
 
 # In test we don't send emails

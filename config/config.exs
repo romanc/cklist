@@ -8,6 +8,7 @@
 import Config
 
 config :cklist,
+  ecto_repos: [Cklist.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
@@ -19,7 +20,7 @@ config :cklist, CklistWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Cklist.PubSub,
-  live_view: [signing_salt: "Z6DyfogX"]
+  live_view: [signing_salt: "+11a8rlF"]
 
 # Configures the mailer
 #
