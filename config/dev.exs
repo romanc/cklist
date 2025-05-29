@@ -1,5 +1,15 @@
 import Config
 
+# Configure your database
+config :cklist, Cklist.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "cklist_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -13,7 +23,7 @@ config :cklist, CklistWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "hlGkd4ai/nZPjQd7HITBrfiay81/BWGLNior3Xfl+y+aEzt6zABLDc6FVfbhvdJC",
+  secret_key_base: "UdVKpKBoiiyRTDG+77owroYrHy5mCO4M6ePeoDkRgJ9XodNxb+dIsZuoi6KOqDRZ",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:cklist, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:cklist, ~w(--watch)]}
