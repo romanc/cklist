@@ -7,7 +7,7 @@ defmodule CklistWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_cklist_key",
-    signing_salt: "EvMF2w4W",
+    signing_salt: "th3Scg6M",
     same_site: "Lax"
   ]
 
@@ -31,6 +31,7 @@ defmodule CklistWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :cklist
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,

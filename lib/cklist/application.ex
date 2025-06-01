@@ -9,6 +9,7 @@ defmodule Cklist.Application do
   def start(_type, _args) do
     children = [
       CklistWeb.Telemetry,
+      Cklist.Repo,
       {DNSCluster, query: Application.get_env(:cklist, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Cklist.PubSub},
       # Start the Finch HTTP client for sending emails
