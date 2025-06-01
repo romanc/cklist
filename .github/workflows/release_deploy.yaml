@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-#  pull_request:  # un-comment to debug deployments
+  pull_request:  # un-comment to debug deployments
 
 jobs:
   deploy:
@@ -12,6 +12,7 @@ jobs:
     env:
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       MIX_ENV: prod
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - uses: actions/checkout@v4
@@ -68,4 +69,6 @@ jobs:
       - name: Activate new release
         if: github.event_name == 'push'
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH_RELEASES }}; rm current; ln -s cklist-${{ steps.info.outputs.version }}-${{ steps.info.outputs.git-hash }}/ current; ${{ secrets.DEPLOY_RESTART_SERVER }}"
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH_RELEASES }}; rm current; ln -s ${{ env.new_release }} current; ${{ secrets.DEPLOY_RESTART_SERVER }}"
+        env:
+          new_release: cklist-${{ steps.info.outputs.version }}-${{ steps.info.outputs.git-hash }}/
