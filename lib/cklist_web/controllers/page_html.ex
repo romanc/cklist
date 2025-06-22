@@ -10,6 +10,7 @@ defmodule CklistWeb.PageHTML do
 
   attr :title, :string, required: true
   attr :desc, :string, default: nil
+
   def awesome(assigns) do
     ~H"""
     <div class="flex items-start my-4">
