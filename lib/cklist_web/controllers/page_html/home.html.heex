@@ -1,63 +1,62 @@
-
 <div class="flex flex-col h-screen">
-
-<main class="flex-grow">
-  <.flash_group flash={@flash} />
-  <div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem] bg-[#78B159]">
-  </div>
-  <div class="px-4 sm:px-6 lg:px-8 xl:px-28">
-    <div class="py-8 right-0 max-w-xl mx-auto lg:mx-0 text-right">
-      <.link href={~p"/users/log_in"}>
-        <.button>Login</.button>
-      </.link>
+  <main class="flex-grow">
+    <.flash_group flash={@flash} />
+    <div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem] bg-[#78B159]">
     </div>
+    <div class="px-4 sm:px-6 lg:px-8 xl:px-28">
+      <div class="py-8 right-0 max-w-xl mx-auto lg:mx-0 text-right">
+        <.link href={~p"/users/log_in"}>
+          <.button>Login</.button>
+        </.link>
+      </div>
 
-    <div class="py-10 sm:py-28 xl:py-32">
-      <div class="mx-auto max-w-xl lg:mx-0">
-        <div class="flex items-center">
-          <img src={~p"/images/logo.svg"} width="72" height="72" />
-          <div>
-            <h1 class="text-[2rem] ml-8 mt-4 flex items-center font-semibold leading-6">
-              cklist.org
-            </h1>
-            <p class="text-lg ml-8 mt-2 leading-10 text-zinc-600 text-balance">
-              Check that list!
-            </p>
+      <div class="py-10 sm:py-28 xl:py-32">
+        <div class="mx-auto max-w-xl lg:mx-0">
+          <div class="flex items-center">
+            <img src={~p"/images/logo.svg"} width="72" height="72" />
+            <div>
+              <h1 class="text-[2rem] ml-8 mt-4 flex items-center font-semibold leading-6">
+                cklist.org
+              </h1>
+              <p class="text-lg ml-8 mt-2 leading-10 text-zinc-600 text-balance">
+                Check that list!
+              </p>
+            </div>
           </div>
-        </div>
-        <p class="mt-24 text-lg leading-7 text-zinc-600">
-          Here's why we think cklists are awesome
-        </p>
-        <div class="mt-8">
-          <.awesome
-            title="free and open-source"
-            desc="We believe in the power of open-source software." />
-          <.awesome
-            title="sequential and non-sequential lists"
-            desc="Do you need to make sure one step follows the other? We got you covered. Is order not important? That works too!"
-          />
-          <.awesome
-            title="collaborative lists"
-            desc="Share lists with others and work together."
-          />
-          <.awesome
-            title="traces"
-            desc="Full accountability: see who ticked off what at which time." />
-        </div>
+          <p class="mt-24 text-lg leading-7 text-zinc-600">
+            Here's why we think cklists are awesome
+          </p>
+          <div class="mt-8">
+            <.awesome
+              title="free and open-source"
+              desc="We believe in the power of open-source software."
+            />
+            <.awesome
+              title="sequential and non-sequential lists"
+              desc="Do you need to make sure one step follows the other? We got you covered. Is order not important? That works too!"
+            />
+            <.awesome
+              title="collaborative lists"
+              desc="Share lists with others and work together."
+            />
+            <.awesome
+              title="traces"
+              desc="Full accountability: see who ticked off what at which time."
+            />
+          </div>
 
-        <div class="text-center mt-16">
-          <.link href={~p"/users/register"}>
-            <.button class="w-full" >Sign up now</.button>
-          </.link>
+          <div class="text-center mt-16">
+            <.link href={~p"/users/register"}>
+              <.button class="w-full">Sign up now</.button>
+            </.link>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<footer class="py-4 mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
-  <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
-  <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
-</footer>
-
+  <footer class="py-4 mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
+    <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
+    <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
+  </footer>
 </div>

@@ -1,42 +1,40 @@
 <div class="flex flex-col h-screen">
-
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-200 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href={~p"/"}>
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
+  <header class="px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between border-b border-zinc-200 py-3 text-sm">
+      <div class="flex items-center gap-4">
+        <a href={~p"/"}>
+          <img src={~p"/images/logo.svg"} width="36" />
+        </a>
+      </div>
+      <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+        <%= if @current_user do %>
+          <a href={~p"/users/settings"} class="hover:text-zinc-700">
+            Settings
+          </a>
+          <a href={~p"/users/log_out"} class="hover:text-zinc-700">
+            Log out
+          </a>
+        <% else %>
+          <a href={~p"/users/register"} class="hover:text-zinc-700">
+            Register
+          </a>
+          <a href={~p"/users/log_in"} class="hover:text-zinc-700">
+            Log in
+          </a>
+        <% end %>
+      </div>
     </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <%= if @current_user do %>
-        <a href={~p"/users/settings"} class="hover:text-zinc-700">
-          Settings
-        </a>
-        <a href={~p"/users/log_out"} class="hover:text-zinc-700">
-          Log out
-        </a>
-      <% else %>
-        <a href={~p"/users/register"} class="hover:text-zinc-700">
-          Register
-        </a>
-        <a href={~p"/users/log_in"} class="hover:text-zinc-700">
-          Log in
-        </a>
-      <% end %>
+  </header>
+
+  <main class="px-4 py-20 sm:px-6 lg:px-8 flex-grow">
+    <div class="mx-auto max-w-2xl">
+      <.flash_group flash={@flash} />
+      {@inner_content}
     </div>
-  </div>
-</header>
+  </main>
 
-<main class="px-4 py-20 sm:px-6 lg:px-8 flex-grow">
-  <div class="mx-auto max-w-2xl">
-    <.flash_group flash={@flash} />
-    {@inner_content}
-  </div>
-</main>
-
-<footer class="mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
-  <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
-  <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
-</footer>
-
+  <footer class="mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
+    <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
+    <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
+  </footer>
 </div>
