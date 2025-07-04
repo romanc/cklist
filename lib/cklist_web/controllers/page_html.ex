@@ -22,4 +22,17 @@ defmodule CklistWeb.PageHTML do
     </div>
     """
   end
+
+  def faq(assigns) do
+    ~H"""
+    <div>
+      <.header class="my-4">FAQ</.header>
+
+      <dl :for={item <- @items}>
+        <dt class="font-semibold my-2">{item.question}</dt>
+        <dd>{item.answer}</dd>
+      </dl>
+    </div>
+    """
+  end
 end
