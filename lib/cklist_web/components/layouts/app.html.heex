@@ -11,9 +11,9 @@
           <a href={~p"/users/settings"} class="hover:text-zinc-700">
             Settings
           </a>
-          <a href={~p"/users/log_out"} class="hover:text-zinc-700">
+          <.link href={~p"/users/log_out"} method="delete" class="hover:text-zinc-700">
             Log out
-          </a>
+          </.link>
         <% else %>
           <a href={~p"/users/register"} class="hover:text-zinc-700">
             Register
