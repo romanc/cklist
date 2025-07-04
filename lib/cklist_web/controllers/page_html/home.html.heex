@@ -41,10 +41,7 @@
               title="Collaborative lists"
               desc="Share lists with others and work together."
             />
-            <.awesome
-              title="Full accountability"
-              desc="See who ticked off what at which time."
-            />
+            <.awesome title="Full accountability" desc="See who ticked off what at which time." />
           </div>
 
           <div class="text-center mt-16">
@@ -66,10 +63,12 @@
         <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
       </div>
       <%= if @current_user do %>
-      <div class="flex-1 text-right">
-          <p class="leading-8"><.link href={~p"/users/log_out"} method="delete">Log out</.link></p>
+        <div class="flex-1 text-right">
+          <p class="leading-8">
+            <.link href={~p"/users/log_out"} method="delete">Log out</.link>
+          </p>
           <p class="leading-8"><.link href={~p"/users/settings"}>Settings</.link></p>
-      </div>
+        </div>
       <% end %>
     </div>
   </footer>
