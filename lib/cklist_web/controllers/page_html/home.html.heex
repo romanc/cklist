@@ -5,9 +5,11 @@
     </div>
     <div class="px-4 sm:px-6 lg:px-8 xl:px-28">
       <div class="py-8 right-0 max-w-xl mx-auto lg:mx-0 text-right">
-        <.link href={~p"/users/log_in"}>
-          <.button>Login</.button>
-        </.link>
+        <%= if !@current_user do %>
+          <.link href={~p"/users/log_in"}>
+            <.button>Login</.button>
+          </.link>
+        <% end %>
       </div>
 
       <div class="py-10 sm:py-28 xl:py-32">
@@ -24,7 +26,7 @@
             </div>
           </div>
           <p class="mt-24 text-lg leading-7 text-zinc-600">
-            Here's why we think cklists are awesome
+            Here's why we think cklists will be awesome
           </p>
           <div class="mt-8">
             <.awesome
@@ -46,9 +48,11 @@
           </div>
 
           <div class="text-center mt-16">
-            <.link href={~p"/users/register"}>
-              <.button class="w-full">Sign up now</.button>
-            </.link>
+            <%= if !@current_user do %>
+              <.link href={~p"/users/register"}>
+                <.button class="w-full">Sign up now</.button>
+              </.link>
+            <% end %>
           </div>
         </div>
       </div>
@@ -56,7 +60,17 @@
   </main>
 
   <footer class="py-4 mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
-    <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
-    <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
+    <div class="flex lg:max-w-xl xl:max-w-2xl">
+      <div class="flex-1 text-left">
+        <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
+        <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
+      </div>
+      <%= if @current_user do %>
+      <div class="flex-1 text-right">
+          <p class="leading-8"><.link href={~p"/users/log_out"} method="delete">Log out</.link></p>
+          <p class="leading-8"><.link href={~p"/users/settings"}>Settings</.link></p>
+      </div>
+      <% end %>
+    </div>
   </footer>
 </div>
