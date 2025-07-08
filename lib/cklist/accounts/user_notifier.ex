@@ -8,7 +8,7 @@ defmodule Cklist.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Cklist", "contact@example.com"})
+      |> from({"Cklist", "no-reply@cklist.org"})
       |> subject(subject)
       |> text_body(body)
 
