@@ -1,10 +1,12 @@
 name: Deploy release
 
 on:
+  # useful for (manually) deploying test/draft releases
+  workflow_dispatch:
+
   push:
     branches:
       - main
-#  pull_request:  # un-comment to debug deployments
 
 jobs:
   deploy:
