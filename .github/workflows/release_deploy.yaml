@@ -63,7 +63,7 @@ jobs:
         env:
           rc: ${{ github.event_name == 'push' && '-' || 'rc-' }}
 
-      - uses: webfactory/ssh-agent@v0.9.0
+      - uses: webfactory/ssh-agent@v0.9.1
         if: github.event_name == 'push'
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
