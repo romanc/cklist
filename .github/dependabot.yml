@@ -1,0 +1,10 @@
+# Configuration file for dependabot version updates
+
+version: 2
+updates:
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # GitHub knows enough to find workflows under `/.github/workflows`. We can thus just use `directory: "/"`.
+    directory: "/"
+    schedule:
+      interval: "weekly"
