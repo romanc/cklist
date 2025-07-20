@@ -1,7 +1,7 @@
 name: Deploy release
 
 on:
-  # useful for (manually) deploying test/draft releases
+  # Manually deploy a release candidate for testing in a staging environment.
   workflow_dispatch:
 
   push:
@@ -12,9 +12,11 @@ jobs:
   deploy:
     runs-on: ubuntu-24.04
     env:
-      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       MIX_ENV: prod
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+
+      # TODO: we just need to provide something, but we don't really need the real production secrets here
+      DATABASE_URL: ${{ github.event_name == 'push' && secrets.DATABASE_URL || secrets.DATABASE_URL_RC }}
 
     steps:
       - uses: actions/checkout@v4
@@ -70,6 +72,9 @@ jobs:
 
       - name: Activate new release
         if: github.event_name == 'push'
+        # TODO
+        # Double check migration. It looks like "DATABASE_URL" is not defined as envvar for the migration script
+        # See GHA deploy logs
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH_RELEASES }}; ./${{ env.release }}/bin/migrate; rm current; ln -s ${{ env.release }}/ current; ${{ secrets.DEPLOY_RESTART_SERVER }}"
         env:
