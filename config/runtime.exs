@@ -108,14 +108,13 @@ if config_env() == :prod do
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")
 
-  config :cklist, Cklist.Mailer,
-    adapter: Swoosh.Adapters.Mua,
-    relay: System.get_env("SMTP_SERVER"),
-    port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
-    auth: [
-      username: System.get_env("SMTP_USERNAME"),
-      password: System.get_env("SMTP_PASSWORD")
-    ]
+  config :cklist, Cklist.Mailer, adapter: Swoosh.Adapters.Mua
+  # relay: System.get_env("SMTP_SERVER"),
+  # port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
+  # auth: [
+  #   username: System.get_env("SMTP_USERNAME"),
+  #   password: System.get_env("SMTP_PASSWORD")
+  # ]
 
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
