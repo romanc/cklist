@@ -116,7 +116,16 @@ if config_env() == :prod do
     password: System.get_env("SMTP_PASSWORD"),
     tls: :always,
     ssl: false,
-    retries: 1
+    auth: :always,
+    no_mx_lookups: false,
+    retries: 2,
+    tls_options: [
+      versions: [:"tlsv1.2", :"tlsv1.3"],
+      verify: :verify_peer,
+      cacerts: :public_key.cacerts_get(),
+      server_name_indication: ~c"#{System.get_env("SMTP_SERVER")}",
+      depth: 99
+    ]
 
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
