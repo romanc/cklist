@@ -73,9 +73,6 @@ jobs:
 
       - name: Activate new release
         if: github.event_name == 'push'
-        # TODO
-        # Double check migration. It looks like "DATABASE_URL" is not defined as envvar for the migration script
-        # See GHA deploy logs
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH_RELEASES }}; rm current; ln -s ${{ env.release }}/ current; ${{ secrets.DEPLOY_RESTART_SERVER }}"
         env:
