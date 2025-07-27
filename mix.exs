@@ -60,7 +60,9 @@ defmodule Cklist.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:hackney, "~> 1.25"}
+      {:hackney, "~> 1.25"},
+      {:mua, "~> 0.2.0"},
+      {:mail, "~> 0.3.0"},
     ]
   end
 
