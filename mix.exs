@@ -58,9 +58,7 @@ defmodule Cklist.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"},
-      {:bamboo, "~> 2.5.0"},
-      {:bamboo_smtp, "~> 4.2.2"}
+      {:bandit, "~> 1.5"}
     ]
   end
 
