@@ -109,8 +109,8 @@ if config_env() == :prod do
   #       domain: System.get_env("MAILGUN_DOMAIN")
 
   config :cklist, Cklist.Mailer,
-    adapter: Bamboo.SMTPAdapter,
-    server: System.get_env("SMTP_SERVER"),
+    adapter: Swoosh.Adapters.SMTP,
+    relay: System.get_env("SMTP_SERVER"),
     port: System.get_env("SMTP_PORT"),
     username: System.get_env("SMTP_USERNAME"),
     password: System.get_env("SMTP_PASSWORD"),
