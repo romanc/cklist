@@ -62,7 +62,7 @@ defmodule Cklist.MixProject do
       {:bandit, "~> 1.5"},
       {:hackney, "~> 1.25"},
       {:mua, "~> 0.2.0"},
-      {:mail, "~> 0.3.0"},
+      {:mail, "~> 0.3.0"}
     ]
   end
 
