@@ -121,7 +121,7 @@ if config_env() == :prod do
     retries: 2,
     tls_options: [
       versions: [:"tlsv1.2", :"tlsv1.3"],
-      verify: :verify_none,
+      verify: :verify_peer,
       cacerts: :public_key.cacerts_get(),
       server_name_indication: ~c"#{System.get_env("SMTP_SERVER")}",
       depth: 99
