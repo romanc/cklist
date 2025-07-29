@@ -108,7 +108,27 @@ if config_env() == :prod do
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")
 
-  config :cklist, Cklist.Mailer, adapter: Swoosh.Adapters.Mua
+  config :cklist, Cklist.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    relay: System.get_env("SMTP_SERVER"),
+    port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
+    username: System.get_env("SMTP_USERNAME"),
+    password: System.get_env("SMTP_PASSWORD"),
+    ssl: true,
+    tls: :never,
+    auth: :always,
+    retries: 2,
+    no_mx_lookups: true,
+    sockopts: [
+      versions: [:"tlsv1.3"],
+      verify: :verify_peer,
+      cacerts: :public_key.cacerts_get(),
+      depth: 5,
+      customize_hostname_check: [
+        match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+      ]
+    ]
+
   # relay: System.get_env("SMTP_SERVER"),
   # port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
   # auth: [
