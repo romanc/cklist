@@ -53,16 +53,14 @@ defmodule Cklist.MixProject do
        depth: 1},
       {:swoosh, "~> 1.5"},
       {:gen_smtp, "~> 1.3"},
+      {:hackney, "~> 1.25"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"},
-      {:hackney, "~> 1.25"},
-      {:mua, "~> 0.2.0"},
-      {:mail, "~> 0.3.0"}
+      {:bandit, "~> 1.5"}
     ]
   end
 
