@@ -110,19 +110,28 @@ if config_env() == :prod do
 
   config :cklist, Cklist.Mailer,
     adapter: Swoosh.Adapters.SMTP,
-    relay: System.get_env("SMTP_RELAY"),       # relay name as in the certificate, e.g. mail.example.org
-    hostname: System.get_env("SMTP_HOSTNAME"), # hostname that ssl connects to
-    port: System.get_env("SMTP_PORT"),         # port that ssl connects to
-    username: System.get_env("SMTP_USERNAME"), # mailuser name
-    password: System.get_env("SMTP_PASSWORD"), # mailuser password
+    # relay name as in the certificate, e.g. mail.example.org
+    relay: System.get_env("SMTP_RELAY"),
+    # hostname that ssl connects to
+    hostname: System.get_env("SMTP_HOSTNAME"),
+    # port that ssl connects to
+    port: System.get_env("SMTP_PORT"),
+    # mailuser name
+    username: System.get_env("SMTP_USERNAME"),
+    # mailuser password
+    password: System.get_env("SMTP_PASSWORD"),
     ssl: true,
-    tls: :never, # Used for STARTTLS config. We use SSL/TLS, so we don't need this.
+    # Used for STARTTLS config. We use SSL/TLS, so we don't need this.
+    tls: :never,
     auth: :always,
     retries: 2,
-    no_mx_lookups: true, # don't look up mx entries. We already specify everything correctly.
+    # don't look up mx entries. We already specify everything correctly.
+    no_mx_lookups: true,
     sockopts: [
-      versions: [:"tlsv1.3"], # force new tls version
-      verify: :verify_peer,   # verify ssl certificates
+      # force new tls version
+      versions: [:"tlsv1.3"],
+      # verify ssl certificates
+      verify: :verify_peer,
       cacerts: :public_key.cacerts_get(),
       depth: 5,
       customize_hostname_check: [
