@@ -110,32 +110,25 @@ if config_env() == :prod do
 
   config :cklist, Cklist.Mailer,
     adapter: Swoosh.Adapters.SMTP,
-    relay: System.get_env("SMTP_RELAY"),
-    hostname: System.get_env("SMTP_HOSTNAME"),
-    port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
-    username: System.get_env("SMTP_USERNAME"),
-    password: System.get_env("SMTP_PASSWORD"),
+    relay: System.get_env("SMTP_RELAY"),       # relay name as in the certificate, e.g. mail.example.org
+    hostname: System.get_env("SMTP_HOSTNAME"), # hostname that ssl connects to
+    port: System.get_env("SMTP_PORT"),         # port that ssl connects to
+    username: System.get_env("SMTP_USERNAME"), # mailuser name
+    password: System.get_env("SMTP_PASSWORD"), # mailuser password
     ssl: true,
-    tls: :never,
+    tls: :never, # Used for STARTTLS config. We use SSL/TLS, so we don't need this.
     auth: :always,
     retries: 2,
-    no_mx_lookups: true,
+    no_mx_lookups: true, # don't look up mx entries. We already specify everything correctly.
     sockopts: [
-      versions: [:"tlsv1.3"],
-      verify: :verify_peer,
+      versions: [:"tlsv1.3"], # force new tls version
+      verify: :verify_peer,   # verify ssl certificates
       cacerts: :public_key.cacerts_get(),
       depth: 5,
       customize_hostname_check: [
         match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
       ]
     ]
-
-  # relay: System.get_env("SMTP_SERVER"),
-  # port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
-  # auth: [
-  #   username: System.get_env("SMTP_USERNAME"),
-  #   password: System.get_env("SMTP_PASSWORD")
-  # ]
 
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
