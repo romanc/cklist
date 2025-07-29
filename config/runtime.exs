@@ -110,7 +110,8 @@ if config_env() == :prod do
 
   config :cklist, Cklist.Mailer,
     adapter: Swoosh.Adapters.SMTP,
-    relay: System.get_env("SMTP_SERVER"),
+    relay: System.get_env("SMTP_RELAY"),
+    hostname: System.get_env("SMTP_HOSTNAME"),
     port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
     username: System.get_env("SMTP_USERNAME"),
     password: System.get_env("SMTP_PASSWORD"),
