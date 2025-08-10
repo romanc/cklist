@@ -12,12 +12,12 @@ jobs:
   deploy:
     runs-on: ubuntu-24.04
     env:
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       MIX_ENV: prod
       # Dummy DATABASE_URL used when building a release. Otherwise, runtime.exs
       # is complaining. But actually, we have no need to connect to the database
       # while building a release.
       DATABASE_URL: "ecto://USER:PASS@HOST/DATABASE"
-      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
 
     steps:
       - uses: actions/checkout@v5

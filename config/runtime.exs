@@ -107,6 +107,7 @@ if config_env() == :prod do
   #       adapter: Swoosh.Adapters.Mailgun,
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")
+  #
 
   config :cklist, Cklist.Mailer,
     adapter: Swoosh.Adapters.SMTP,
