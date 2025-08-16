@@ -10,4 +10,8 @@ defmodule CklistWeb.PageController do
   def about(conn, _params) do
     render(conn, :about)
   end
+
+  def privacy(conn, _params) do
+    render(conn, :privacy)
+  end
 end

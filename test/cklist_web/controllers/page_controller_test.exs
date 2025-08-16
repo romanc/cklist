@@ -6,7 +6,7 @@ defmodule CklistWeb.PageControllerTest do
     assert html_response(conn, 200) =~ "Check that list"
   end
 
-  describe "about.html" do
+  describe "about page" do
     test "contains current app version", %{conn: conn} do
       conn = get(conn, ~p"/about")
       assert html_response(conn, 200) =~ "cklist version #{Application.spec(:cklist, :vsn)}"
@@ -21,5 +21,10 @@ defmodule CklistWeb.PageControllerTest do
       conn = get(conn, ~p"/about")
       assert html_response(conn, 200) =~ "FAQ"
     end
+  end
+
+  test "privacy policy", %{conn: conn} do
+    conn = get(conn, ~p"/privacy")
+    assert html_response(conn, 200) =~ "We value your privacy."
   end
 end

@@ -22,6 +22,7 @@ defmodule CklistWeb.Router do
 
     get "/", PageController, :home
     get "/about", PageController, :about
+    get "/privacy", PageController, :privacy
   end
 
   # Other scopes may use custom stacks.
