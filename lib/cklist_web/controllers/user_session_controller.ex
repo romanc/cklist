@@ -34,9 +34,16 @@ defmodule CklistWeb.UserSessionController do
     end
   end
 
-  def delete(conn, _params) do
+  def delete(conn, params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
+    |> put_flash(:info, delete_message(params))
     |> UserAuth.log_out_user()
+  end
+
+  defp delete_message(params) do
+    case params["_action"] do
+      "user_deleted" -> "User successfully deleted."
+      _ -> "Logged out successfully."
+    end
   end
 end

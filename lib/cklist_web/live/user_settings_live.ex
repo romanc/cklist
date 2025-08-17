@@ -69,6 +69,33 @@ defmodule CklistWeb.UserSettingsLive do
           </:actions>
         </.simple_form>
       </div>
+      <div>
+        <p class="my-12 text-red-500 font-bold">Danger zone</p>
+        <p>
+          Deleting your account is a permanent action that cannot be undone. This is the point of no return. You have been warned.
+        </p>
+        <.simple_form
+          for={@delete_form}
+          id="delete_form"
+          action={~p"/users/log_out?_action=user_deleted"}
+          method="delete"
+          phx-submit="delete_user"
+          phx-trigger-action={@trigger_submit_delete}
+        >
+          <.input
+            field={@delete_form[:current_password]}
+            name="current_password"
+            id="current_password_for_delete"
+            type="password"
+            label="Current password"
+            value={@delete_form_current_password}
+            required
+          />
+          <:actions>
+            <.button phx-disable-with="Deleting...">Delete Account</.button>
+          </:actions>
+        </.simple_form>
+      </div>
     </div>
     """
   end
@@ -90,15 +117,19 @@ defmodule CklistWeb.UserSettingsLive do
     user = socket.assigns.current_user
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
+    delete_changeset = Accounts.change_user_delete(user)
 
     socket =
       socket
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
+      |> assign(:delete_form_current_password, nil)
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
+      |> assign(:delete_form, to_form(delete_changeset))
       |> assign(:trigger_submit, false)
+      |> assign(:trigger_submit_delete, false)
 
     {:ok, socket}
   end
@@ -162,6 +193,24 @@ defmodule CklistWeb.UserSettingsLive do
 
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
+    end
+  end
+
+  def handle_event("delete_user", params, socket) do
+    %{"current_password" => password} = params
+    user = socket.assigns.current_user
+
+    case Accounts.delete_user(user, password) do
+      :ok ->
+        {:noreply, assign(socket, trigger_submit_delete: true)}
+
+      {:error, changeset} ->
+        socket =
+          socket
+          |> assign(:delete_form, to_form(Map.put(changeset, :action, :insert)))
+          |> assign(:delete_form_current_password, password)
+
+        {:noreply, socket}
     end
   end
 end
