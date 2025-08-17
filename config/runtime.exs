@@ -108,6 +108,38 @@ if config_env() == :prod do
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")
   #
+
+  config :cklist, Cklist.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    # relay name as in the certificate, e.g. mail.example.org
+    relay: System.get_env("SMTP_RELAY"),
+    # hostname that ssl connects to
+    hostname: System.get_env("SMTP_HOSTNAME"),
+    # port that ssl connects to
+    port: System.get_env("SMTP_PORT"),
+    # mailuser name
+    username: System.get_env("SMTP_USERNAME"),
+    # mailuser password
+    password: System.get_env("SMTP_PASSWORD"),
+    ssl: true,
+    # Used for STARTTLS config. We use SSL/TLS, so we don't need this.
+    tls: :never,
+    auth: :always,
+    retries: 2,
+    # don't look up mx entries. We already specify everything correctly.
+    no_mx_lookups: true,
+    sockopts: [
+      # force new tls version
+      versions: [:"tlsv1.3"],
+      # verify ssl certificates
+      verify: :verify_peer,
+      cacerts: :public_key.cacerts_get(),
+      depth: 5,
+      customize_hostname_check: [
+        match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+      ]
+    ]
+
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
   #
