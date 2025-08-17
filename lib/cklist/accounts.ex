@@ -215,6 +215,32 @@ defmodule Cklist.Accounts do
     end
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for deleting the user.
+
+  ## Examples
+
+      iex> change_user_delete()
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_delete(user, attrs \\ %{}) do
+    User.delete_changeset(user, attrs)
+  end
+
+  def delete_user(user, password) do
+    changeset =
+      user
+      |> User.validate_current_password(password)
+
+    if changeset.valid? do
+      Repo.delete!(user)
+      :ok
+    else
+      {:error, changeset}
+    end
+  end
+
   ## Session
 
   @doc """

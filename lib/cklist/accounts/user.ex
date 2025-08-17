@@ -130,6 +130,10 @@ defmodule Cklist.Accounts.User do
     change(user, confirmed_at: now)
   end
 
+  def delete_changeset(user, attrs) do
+    user |> cast(attrs, [])
+  end
+
   @doc """
   Verifies the password.
 
