@@ -4,7 +4,7 @@ defmodule Cklist.MixProject do
   def project do
     [
       app: :cklist,
-      version: "0.0.11",
+      version: "0.0.12",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,

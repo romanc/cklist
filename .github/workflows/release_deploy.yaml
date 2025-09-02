@@ -54,7 +54,7 @@ jobs:
           echo "cklist version: ${{ steps.info.outputs.version }}"
 
       - name: Deploy to cklist.org
-        uses: burnett01/rsync-deployments@7.0.2
+        uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -az
           path: _build/prod/rel/cklist/
