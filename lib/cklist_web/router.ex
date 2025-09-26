@@ -76,6 +76,7 @@ defmodule CklistWeb.Router do
   scope "/", CklistWeb do
     pipe_through [:browser]
 
+    post "/users/log_out", UserSessionController, :delete
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,

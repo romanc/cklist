@@ -221,22 +221,23 @@ defmodule CklistWeb.UserSettingsLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       form =
-        form(lv, "#delete_form", %{
-          "current_password" => valid_user_password()
-        })
+        form(lv, "#delete_form", %{"current_password" => valid_user_password()})
 
-      result = render_submit(form)
-
-      inspect(result)
+      rendered = render_submit(form)
+      assert rendered =~ ~r/phx-trigger-action/
 
       user_delete_conn = follow_trigger_action(form, conn)
+      # NOTE: html forms can only have "GET" and "POST" as methods. It is tempting
+      # to use method="delete" but this just doesn't exist in the standard.
+      assert user_delete_conn.method == "POST"
 
+      # make sure we get redirected home, ...
       assert redirected_to(user_delete_conn) == ~p"/"
-
+      # ... have no session anymore,
       refute get_session(user_delete_conn, :user_token)
-
+      # ... and show the expected flash card
       assert Phoenix.Flash.get(user_delete_conn.assigns.flash, :info) =~
-               "User deleted successfully"
+               "User successfully deleted"
 
       assert_raise Ecto.NoResultsError, fn ->
         Accounts.get_user!(user.id)

@@ -78,7 +78,7 @@ defmodule CklistWeb.UserSettingsLive do
           for={@delete_form}
           id="delete_form"
           action={~p"/users/log_out?_action=user_deleted"}
-          method="delete"
+          method="post"
           phx-submit="delete_user"
           phx-trigger-action={@trigger_submit_delete}
         >
