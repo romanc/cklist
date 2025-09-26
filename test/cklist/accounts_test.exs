@@ -505,4 +505,32 @@ defmodule Cklist.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "change_user_delete/2" do
+    test "returns a user changeset" do
+      assert %Ecto.Changeset{} = Accounts.change_user_delete(%User{})
+    end
+  end
+
+  describe "delete_user/2" do
+    test "requires valid password" do
+      user = user_fixture()
+      {:error, changeset} = Accounts.delete_user(user, "invalid_password")
+      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+    end
+
+    test "deletes user from database" do
+      %{id: id} = user = user_fixture()
+      # assert user is in the DB before attempting to delete
+      assert %User{id: ^id} = Accounts.get_user!(user.id)
+
+      # call to delete user from DB
+      assert :ok = Accounts.delete_user(user, valid_user_password())
+
+      # asserts user is not in the DB anymore
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user!(user.id)
+      end
+    end
+  end
 end

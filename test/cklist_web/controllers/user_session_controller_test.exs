@@ -108,5 +108,10 @@ defmodule CklistWeb.UserSessionControllerTest do
       refute get_session(conn, :user_token)
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
     end
+
+    test "has a different flash info on account deletion", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> delete(~p"/users/log_out", %{_action: "user_deleted"})
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User successfully deleted."
+    end
   end
 end

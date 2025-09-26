@@ -14,6 +14,8 @@ defmodule CklistWeb.UserSettingsLiveTest do
 
       assert html =~ "Change Email"
       assert html =~ "Change Password"
+      assert html =~ "Danger zone"
+      assert html =~ "Delete Account"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
@@ -205,6 +207,40 @@ defmodule CklistWeb.UserSettingsLiveTest do
       assert path == ~p"/users/log_in"
       assert %{"error" => message} = flash
       assert message == "You must log in to access this page."
+    end
+  end
+
+  describe "delete user form" do
+    setup %{conn: conn} do
+      password = valid_user_password()
+      user = user_fixture(%{password: password})
+      %{conn: log_in_user(conn, user), user: user, password: password}
+    end
+
+    test "deletes user and redirects to home", %{conn: conn, user: user} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      form =
+        form(lv, "#delete_form", %{
+          "current_password" => valid_user_password()
+        })
+
+      result = render_submit(form)
+
+      inspect(result)
+
+      user_delete_conn = follow_trigger_action(form, conn)
+
+      assert redirected_to(user_delete_conn) == ~p"/"
+
+      refute get_session(user_delete_conn, :user_token)
+
+      assert Phoenix.Flash.get(user_delete_conn.assigns.flash, :info) =~
+               "User deleted successfully"
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user!(user.id)
+      end
     end
   end
 end
