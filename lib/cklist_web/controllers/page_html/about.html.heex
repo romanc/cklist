@@ -1,0 +1,29 @@
+<.header class="mb-12">About</.header>
+
+<p>
+  This is cklist version {Application.spec(:cklist, :vsn)}, built with phoenix {Application.spec(
+    :phoenix,
+    :vsn
+  )}.
+</p>
+
+<.faq items={[
+  %{
+    question: "Are cklists working yet?",
+    answer:
+      ~H"No, <.link href={~p'/'}>cklist.org</.link>
+is not yet functional. We are building cklists in the open. This is a pre-release. Until we reach version 1.0, it won't be feature complete."
+  },
+  %{
+    question: "Can I sing-up now?",
+    answer:
+      ~H"Yes, you can sign-up and log in/out at any time you like. More features will be available once we add them."
+  },
+  %{
+    question: "Any timeline for new features?",
+    answer:
+      ~H'No, currently not. We are building <.link href={~p"/"}>cklist.org</.link>
+in our free time. You might find more information on <a href="https://github.com/romanc/cklist/">GitHub</a>.'
+  }
+]}>
+</.faq>

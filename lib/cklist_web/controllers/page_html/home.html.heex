@@ -1,20 +1,76 @@
-<.flash_group flash={@flash} />
-<div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem] bg-[#78B159]">
-</div>
-<div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
-  <div class="mx-auto max-w-xl lg:mx-0">
-    <img src={~p"/images/logo.svg"} width="72" height="72" />
-    <h1 class="text-brand mt-10 flex items-center text-sm font-semibold leading-6">
-      cklist
-      <small class="bg-brand/5 text-[0.8125rem] ml-3 rounded-full px-2 font-medium leading-6">
-        v{Application.spec(:cklist, :vsn)}
-      </small>
-    </h1>
-    <p class="text-[2rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900 text-balance">
-      Check that list!
-    </p>
-    <p class="mt-4 text-base leading-7 text-zinc-600">
-      Awesome checklists are coming up here. Stay tuned.
-    </p>
-  </div>
+<div class="flex flex-col h-screen">
+  <main class="flex-grow">
+    <.flash_group flash={@flash} />
+    <div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem] bg-[#78B159]">
+    </div>
+    <div class="px-4 sm:px-6 lg:px-8 xl:px-28">
+      <div class="py-8 right-0 max-w-xl mx-auto lg:mx-0 text-right">
+        <%= if !@current_user do %>
+          <.link href={~p"/users/log_in"}>
+            <.button>Login</.button>
+          </.link>
+        <% end %>
+      </div>
+
+      <div class="py-10 sm:py-28 xl:py-32">
+        <div class="mx-auto max-w-xl lg:mx-0">
+          <div class="flex items-center">
+            <img src={~p"/images/logo.svg"} width="72" height="72" />
+            <div>
+              <h1 class="text-[2rem] ml-8 mt-4 flex items-center font-semibold leading-6">
+                cklist.org
+              </h1>
+              <p class="text-lg ml-8 mt-2 leading-10 text-zinc-600 text-balance">
+                Check that list!
+              </p>
+            </div>
+          </div>
+          <p class="mt-24 text-lg leading-7 text-zinc-600">
+            Here's why we think cklists will be awesome
+          </p>
+          <div class="mt-8">
+            <.awesome
+              title="Free and open-source"
+              desc="We believe in the power of open-source software."
+            />
+            <.awesome
+              title="Sequential and non-sequential lists"
+              desc="You need to make sure one step follows another? We've got you covered! Order is not important? That works too!"
+            />
+            <.awesome
+              title="Collaborative lists"
+              desc="Share lists with others and work together."
+            />
+            <.awesome title="Full accountability" desc="See who ticked off what at which time." />
+          </div>
+
+          <div class="text-center mt-16">
+            <%= if !@current_user do %>
+              <.link href={~p"/users/register"}>
+                <.button class="w-full">Sign up now</.button>
+              </.link>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-4 mx-4 sm:mx-6 lg:mx-8 border-t border-zinc-200">
+    <div class="flex lg:max-w-xl xl:max-w-2xl">
+      <div class="flex-1 text-left">
+        <p class="leading-8"><.link href={~p"/about"}>About</.link></p>
+        <p class="leading-8"><.link href="https://github.com/romanc/cklist/">GitHub</.link></p>
+        <p class="leading-8"><.link href={~p"/privacy"}>Privacy Policy</.link></p>
+      </div>
+      <%= if @current_user do %>
+        <div class="flex-1 text-right">
+          <p class="leading-8">
+            <.link href={~p"/users/log_out"} method="delete">Log out</.link>
+          </p>
+          <p class="leading-8"><.link href={~p"/users/settings"}>Settings</.link></p>
+        </div>
+      <% end %>
+    </div>
+  </footer>
 </div>
