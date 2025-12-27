@@ -121,9 +121,9 @@ if config_env() == :prod do
     username: System.get_env("SMTP_USERNAME"),
     # mailuser password
     password: System.get_env("SMTP_PASSWORD"),
-    ssl: true,
-    # Used for STARTTLS config. We use SSL/TLS, so we don't need this.
-    tls: :never,
+    # assume STARTTLS
+    ssl: false,
+    tls: :always,
     auth: :always,
     retries: 2,
     # don't look up mx entries. We already specify everything correctly.
